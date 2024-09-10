@@ -1,4 +1,4 @@
-package configUtil
+package database
 
 import (
 	"AletheiaDesktop/search"

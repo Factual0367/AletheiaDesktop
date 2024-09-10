@@ -6,13 +6,7 @@ import (
 )
 
 func InitializeConfig() {
-	configLocation, err := ConstructConfigLocation()
-
-	if err != nil {
-		log.Fatalln("Unable to create config location")
-		panic(err)
-	}
-
+	// add checks
 	initialDownloadDir, err := os.UserHomeDir()
 
 	if err != nil {
@@ -24,7 +18,7 @@ func InitializeConfig() {
 		"downloadLocation": initialDownloadDir,
 	}
 
-	fileWriteErr := WriteConfigFile(configLocation, initialUserConfig)
+	fileWriteErr := WriteConfigFile(initialUserConfig)
 
 	if fileWriteErr != nil {
 		log.Fatalln("Unable to write config file")

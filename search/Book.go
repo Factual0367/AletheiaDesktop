@@ -38,7 +38,7 @@ func (book *Book) SaveToFile(response *http.Response) bool {
 	// create the file
 	out, err := os.Create(book.Filepath)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln(fmt.Sprintf("Could not create a file for the book: %s", err))
 		return false
 	}
 	defer out.Close()

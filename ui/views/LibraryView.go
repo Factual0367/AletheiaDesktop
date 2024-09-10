@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"log"
 	"strings"
+	"time"
 )
 
 func loadSavedBooks() (map[string]*search.Book, error) {
@@ -50,10 +51,18 @@ func CreateLibraryView() *container.TabItem {
 		updateLibraryGrid(libraryViewGrid, savedBooks, "")
 	}
 
+	var typingTimer *time.Timer
+
 	filterInput.OnChanged = func(filter string) {
-		if savedBooks != nil {
-			updateLibraryGrid(libraryViewGrid, savedBooks, filter)
+		if typingTimer != nil {
+			typingTimer.Stop() // stop timer
 		}
+
+		typingTimer = time.AfterFunc(500*time.Millisecond, func() { // 500ms delay so filtering does not get laggy
+			if savedBooks != nil {
+				updateLibraryGrid(libraryViewGrid, savedBooks, filter)
+			}
+		})
 	}
 
 	libraryViewLayout := container.NewBorder(filterInput, nil, nil, nil, libraryViewGrid)

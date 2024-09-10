@@ -17,6 +17,7 @@ func CreateSettingsView() *container.TabItem {
 
 	changeDownloadLocation := widget.NewButtonWithIcon("Change Library Location", theme.FolderIcon(), func() {
 		newDownloadDir := shared.GetFolder()
+		config.UpdateDownloadPath(newDownloadDir)
 		downloadDirLabel.SetText(fmt.Sprintf("%s \n%s", currentLibraryLocationMsg, newDownloadDir))
 	})
 

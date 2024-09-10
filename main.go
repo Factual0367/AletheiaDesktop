@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
 )
 
 func checkFirstRun() {
@@ -27,11 +28,22 @@ func main() {
 	searchView := views.CreateSearchView()
 	settingsView := views.CreateSettingsView()
 	libraryView := views.CreateLibraryView()
+
 	tabs := container.NewAppTabs(
 		searchView,
 		libraryView,
 		settingsView,
 	)
+
+	// this is necessary to refresh library view
+	// when the user downloads a book
+	tabs.OnSelected = func(tab *container.TabItem) {
+		if tab.Icon == theme.StorageIcon() {
+			libraryView = views.CreateLibraryView()
+			tabs.Items[1] = libraryView
+			tabs.Refresh()
+		}
+	}
 
 	tabs.SetTabLocation(container.TabLocationTop)
 

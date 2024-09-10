@@ -45,10 +45,6 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 	grid.Refresh()
 }
 
-// TODO
-// library does not update
-// when user switches to it
-// needs FIX
 func CreateLibraryView() *container.TabItem {
 	filterInput := widget.NewEntry()
 	filterInput.PlaceHolder = "Filter"

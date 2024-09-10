@@ -7,8 +7,8 @@ func Exists(path string) (bool, error) {
 	if err == nil {
 		return true, nil
 	}
-	if os.IsNotExist(err) {
-		return false, nil
-	}
+	// if os.IsNotExist(err) {
+	//	return false, nil
+	// }
 	return false, err
 }

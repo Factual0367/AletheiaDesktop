@@ -105,7 +105,7 @@ func CreateSearchView() *container.TabItem {
 		detailsContainer,
 		searchContent,
 	)
-	splitView.SetOffset(0.25)
+	splitView.SetOffset(0.10)
 
 	return container.NewTabItemWithIcon("Search", theme.SearchIcon(), splitView)
 }

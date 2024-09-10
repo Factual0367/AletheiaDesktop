@@ -1,0 +1,4 @@
+// TODO
+// 1) library does not update when user switches to it
+        1.1) Refresh is done but now switching to library tab is laggy
+// 2) Implement convert function. PDF to EPUB, DJVU, KEPUB

@@ -5,6 +5,7 @@ import (
 	book2 "AletheiaDesktop/ui/book"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/onurhanak/libgenapi"
@@ -61,17 +62,10 @@ func createSearchBar(onSearch func()) (searchInput *widget.Entry, searchButton *
 }
 
 func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select) *fyne.Container {
-	topContent := container.NewWithoutLayout(searchInput, searchButton, searchTypeWidget)
-
-	searchInput.Move(fyne.NewPos(5, 7))
-	searchInput.Resize(fyne.NewSize(500, 40))
-
-	searchButton.Move(fyne.NewPos(635, 7))
-	searchButton.Resize(fyne.NewSize(50, 40))
-
-	searchTypeWidget.Move(fyne.NewPos(510, 7))
-	searchTypeWidget.Resize(fyne.NewSize(120, 40))
-
+	
+	searchInputContainer := container.NewCenter(searchInput)
+	searchInputContainer.MinSize()
+	topContent := container.NewGridWithColumns(2, searchInputContainer, container.NewHBox(searchButton, searchTypeWidget, layout.NewSpacer()))
 	return topContent
 }
 

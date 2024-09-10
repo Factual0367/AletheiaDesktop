@@ -10,7 +10,7 @@ func GetCurrentDownloadFolder() string {
 		log.Fatalln("Could not read config file:", configReadErr)
 	}
 
-	currentDownloadFolder := userConfigContent["downloadFolder"]
+	currentDownloadFolder := userConfigContent["downloadLocation"]
 
 	return currentDownloadFolder
 }

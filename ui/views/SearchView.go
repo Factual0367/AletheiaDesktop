@@ -11,13 +11,11 @@ import (
 	"log"
 )
 
-func constructBookContainers(query *libgenapi.Query) *fyne.Container {
+func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Container) *fyne.Container {
+	bookGrid := container.NewVBox()
 
-	var bookGrid *fyne.Container
-
-	bookGrid = container.NewVBox()
 	for _, book := range query.Results {
-		convertedBook := &search.Book{
+		convertedBook := search.Book{
 			Book:       book, // assign libgenapi.Book
 			Filename:   "",   // initialize with dummy values
 			Filepath:   "",
@@ -25,56 +23,95 @@ func constructBookContainers(query *libgenapi.Query) *fyne.Container {
 		}
 		convertedBook.ConstructFilename()
 		convertedBook.ConstructFilepath()
-		bookItem := book2.CreateBookListContainer(convertedBook)
+		bookItem := book2.CreateBookListContainer(convertedBook, detailsContainer)
 		bookGrid.Add(bookItem)
 	}
 
-	return container.NewVBox(bookGrid)
+	return bookGrid
 }
 
-func CreateSearchView() *container.TabItem {
-	searchInput := widget.NewEntry()
+func createDefaultDetailsView() *fyne.Container {
+	defaultBook := search.Book{
+		Book: libgenapi.Book{
+			Title:     "Select a book to view details.",
+			CoverLink: "https://cdn.pixabay.com/photo/2013/07/13/13/34/book-161117_960_720.png",
+		},
+		Filename:   "",
+		Filepath:   "",
+		Downloaded: false,
+	}
+	defaultDetailsView := book2.CreateBookDetailsView(defaultBook)
+	defaultDetailsViewContainer := container.NewVBox(defaultDetailsView)
+	return defaultDetailsViewContainer
+}
+
+func createSearchBar(onSearch func()) (searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select) {
+	searchInput = widget.NewEntry()
 	searchInput.SetPlaceHolder("Enter search query")
 
-	resultsContainer := container.NewVBox()
+	searchButton = widget.NewButtonWithIcon("", theme.SearchIcon(), func() { onSearch() })
+	searchInput.OnSubmitted = func(text string) { onSearch() }
 
-	var searchType = "Default"
-
-	resultsContentScrollable := container.NewVScroll(resultsContainer)
-
-	executeSearch := func() {
-		resultsContainer.Objects = nil            // clear previous results
-		resultsContainer.Add(widget.NewLabel("")) // padding
-		go func() {
-			query := search.SearchLibgen(searchInput.Text, searchType)
-			if query != nil {
-				resultsContainer.Add(constructBookContainers(query))
-			}
-			resultsContainer.Refresh() // refresh to display new results
-		}()
-	}
-
-	searchButton := widget.NewButtonWithIcon("", theme.SearchIcon(), func() { executeSearch() })
-	searchInput.OnSubmitted = func(text string) { executeSearch() }
-
-	searchTypeWidget := widget.NewSelect([]string{"Default", "Author", "Title"}, func(value string) {
-		searchType = value
+	searchTypeWidget = widget.NewSelect([]string{"Default", "Author", "Title"}, func(value string) {
 		log.Println("Select set to", value)
 	})
 	searchTypeWidget.PlaceHolder = "Default"
 
+	return searchInput, searchButton, searchTypeWidget
+}
+
+func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select) *fyne.Container {
 	topContent := container.NewWithoutLayout(searchInput, searchButton, searchTypeWidget)
+
+	searchInput.Move(fyne.NewPos(5, 7))
+	searchInput.Resize(fyne.NewSize(500, 40))
+
+	searchButton.Move(fyne.NewPos(635, 7))
+	searchButton.Resize(fyne.NewSize(50, 40))
+
 	searchTypeWidget.Move(fyne.NewPos(510, 7))
 	searchTypeWidget.Resize(fyne.NewSize(120, 40))
-	searchInput.Move(fyne.NewPos(5, 7))
-	searchButton.Move(fyne.NewPos(635, 7))
-	searchInput.Resize(fyne.NewSize(500, 40))
-	searchButton.Resize(fyne.NewSize(50, 40))
+
+	return topContent
+}
+
+func executeSearch(searchInput *widget.Entry, searchType string, resultsContainer *fyne.Container, defaultDetailsContainer *fyne.Container) {
+	resultsContainer.Objects = nil            // clear previous results
+	resultsContainer.Add(widget.NewLabel("")) // padding
+
+	go func() {
+		query := search.SearchLibgen(searchInput.Text, searchType)
+		if query != nil {
+			resultsContainer.Add(constructBookContainers(query, defaultDetailsContainer))
+		}
+		resultsContainer.Refresh() // refresh to display new results
+	}()
+}
+
+func CreateSearchView() *container.TabItem {
+	resultsContainer := container.NewVBox()
+	resultsContentScrollable := container.NewVScroll(resultsContainer)
+	detailsContainer := createDefaultDetailsView()
+
+	var searchType = "Default"
+
+	var searchInput = widget.NewEntry()
+	searchInput, searchButton, searchTypeWidget := createSearchBar(func() {
+		executeSearch(searchInput, searchType, resultsContainer, detailsContainer)
+	})
+
+	topContent := layoutTopContent(searchInput, searchButton, searchTypeWidget)
 
 	searchContent := container.NewBorder(
 		topContent, nil, nil, nil, // bottom, left, right are nil
 		resultsContentScrollable, // center content
 	)
 
-	return container.NewTabItemWithIcon("Search", theme.SearchIcon(), searchContent)
+	splitView := container.NewHSplit(
+		detailsContainer,
+		searchContent,
+	)
+	splitView.SetOffset(0.25)
+
+	return container.NewTabItemWithIcon("Search", theme.SearchIcon(), splitView)
 }

@@ -2,6 +2,7 @@ package book
 
 import (
 	"AletheiaDesktop/search"
+	"AletheiaDesktop/util/database"
 	"AletheiaDesktop/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
@@ -42,6 +43,7 @@ func createDownloadButton(book search.Book) *widget.Button {
 			if success {
 				shared.SendNotification(book.Title, "Downloaded successfully")
 				downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
+				database.UpdateDatabase(book)
 			} else {
 				shared.SendNotification(book.Title, "Download failed")
 				log.Println(fmt.Sprintf("Download failed: %s"))
@@ -98,10 +100,11 @@ func createBookDetailsBottomView(book search.Book) *fyne.Container {
 	return bottomView
 }
 
-func CreateBookDetailsView(book search.Book) *container.Split {
+func CreateBookDetailsView(book search.Book) *fyne.Container {
 	topView := createBookDetailsTopView(book)
 	bottomView := createBookDetailsBottomView(book)
 	detailsSplit := container.NewVSplit(topView, bottomView)
 	detailsSplit.SetOffset(0.25)
-	return detailsSplit
+	detailsSplitContainer := container.NewStack(detailsSplit)
+	return detailsSplitContainer
 }

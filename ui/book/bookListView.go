@@ -2,17 +2,18 @@ package book
 
 import (
 	"AletheiaDesktop/search"
+	"AletheiaDesktop/util/database"
+	"AletheiaDesktop/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/gen2brain/beeep"
 	"log"
 )
 
-func CreateBookListContainer(book *search.Book) *fyne.Container {
+func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"%s by %s",
 		book.Title, book.Author)
@@ -28,17 +29,11 @@ func CreateBookListContainer(book *search.Book) *fyne.Container {
 		go func() {
 			success := book.Download()
 			if success {
-				ok := beeep.Notify(book.Title, "Downloaded successfully", "")
-				if ok != nil {
-					log.Println("Could not send notification.")
-				}
+				shared.SendNotification(book.Title, "Downloaded successfully")
 				downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
-
+				database.UpdateDatabase(book)
 			} else {
-				ok := beeep.Notify(book.Title, "Download failed", "")
-				if ok != nil {
-					log.Println("Could not send notification.")
-				}
+				shared.SendNotification(book.Title, "Download failed")
 				log.Println(fmt.Sprintf("Download failed: %s"))
 				downloadButton.SetIcon(theme.ErrorIcon())
 			}
@@ -46,7 +41,13 @@ func CreateBookListContainer(book *search.Book) *fyne.Container {
 	})
 
 	moreInformationButton := widget.NewButtonWithIcon("", theme.InfoIcon(), func() {
-		// placeholder
+		DetailsContainer.Objects = nil
+
+		// new content for the selected book
+		newDetailsView := CreateBookDetailsView(book)
+		DetailsContainer.Add(newDetailsView)
+
+		DetailsContainer.Refresh()
 	})
 
 	buttonContainer := container.NewHBox(

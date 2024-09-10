@@ -7,7 +7,7 @@ func UpdateDownloadPath(newDownloadPath string) {
 	if configReadErr != nil {
 		log.Fatalln(configReadErr.Error())
 	}
-	currentConfigContent["downloadPath"] = newDownloadPath
+	currentConfigContent["downloadLocation"] = newDownloadPath
 	writeConfigErr := WriteConfigFile(currentConfigContent)
 	if writeConfigErr != nil {
 		log.Fatalln(writeConfigErr.Error())

@@ -24,21 +24,6 @@ func main() {
 	myWindow := myApp.NewWindow("Aletheia")
 	checkFirstRun()
 
-	/*defaultBook := libgenapi.Book{
-		ID:           "",
-		MD5:          "",
-		Title:        "Select a book to view details",
-		Author:       "",
-		Publisher:    "",
-		Year:         "",
-		Language:     "",
-		Pages:        "",
-		Size:         "",
-		Extension:    "",
-		DownloadLink: "",
-		CoverLink:    "https://cdn.pixabay.com/photo/2013/07/13/13/34/book-161117_960_720.png",
-	} */
-
 	searchPage := views.CreateSearchView()
 	//settingsPage := ui.CreateSettingsTab()
 	//libraryPage := ui.CreateLibraryView()
@@ -50,10 +35,7 @@ func main() {
 
 	tabs.SetTabLocation(container.TabLocationTop)
 
-	mainContainer := container.NewHSplit(container.NewVBox(), tabs)
-	mainContainer.SetOffset(0.25)
-
-	myWindow.SetContent(mainContainer)
+	myWindow.SetContent(tabs)
 	myWindow.Resize(fyne.NewSize(900, 600)) // Set a decent window size
 	myWindow.ShowAndRun()
 }

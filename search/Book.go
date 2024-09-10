@@ -55,6 +55,7 @@ func (book *Book) SaveToFile(response *http.Response) bool {
 }
 
 func (book *Book) Download() bool {
+	book.ConstructFilepath()
 	response, err := http.Get(book.DownloadLink)
 	if err != nil {
 		log.Println("Could not download book")

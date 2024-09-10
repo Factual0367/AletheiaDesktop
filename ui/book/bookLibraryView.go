@@ -2,6 +2,7 @@ package book
 
 import (
 	"AletheiaDesktop/search"
+	"AletheiaDesktop/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -10,6 +11,7 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
+	"log"
 )
 
 func CreateBookLibraryContainer(book search.Book) *fyne.Container {
@@ -21,10 +23,19 @@ func CreateBookLibraryContainer(book search.Book) *fyne.Container {
 	bookDetailsLabel := widget.NewLabelWithStyle(bookDetailsString, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
 	bookDetailsLabel.Wrapping = fyne.TextWrapWord
 
-	openButton := widget.NewButtonWithIcon("", theme.FileIcon(), func() { go func() {}() })
-	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {})
+	openButton := widget.NewButtonWithIcon("", theme.FileIcon(), func() {
+		go func() {
+			err := shared.OpenBookWithDefaultApp(book.Filepath)
+			if err != nil {
+				log.Fatalln("Could not open book with default application.")
+			}
+		}()
+	})
 
-	buttonContainer := container.NewHBox(convertButton, openButton, layout.NewSpacer())
+	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {})
+	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {})
+
+	buttonContainer := container.NewHBox(openButton, convertButton, deleteButton, layout.NewSpacer())
 
 	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
 	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}

@@ -4,6 +4,7 @@ import (
 	"AletheiaDesktop/search"
 	book2 "AletheiaDesktop/ui/book"
 	"AletheiaDesktop/util/database"
+	"AletheiaDesktop/util/shared"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -30,13 +31,24 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 
 	for _, book := range books {
 		if strings.Contains(strings.ToLower(book.Title), strings.ToLower(filter)) {
-			bookLibraryContainer := book2.CreateBookLibraryContainer(*book)
-			grid.Add(bookLibraryContainer)
+			bookFileExists, err := shared.Exists(book.Filepath)
+			if err != nil {
+				log.Printf("Could not check if book exists for book: %s", book.Title)
+			}
+			if bookFileExists {
+				bookLibraryContainer := book2.CreateBookLibraryContainer(*book)
+				grid.Add(bookLibraryContainer)
+			}
+
 		}
 	}
 	grid.Refresh()
 }
 
+// TODO
+// library does not update
+// when user switches to it
+// needs FIX
 func CreateLibraryView() *container.TabItem {
 	filterInput := widget.NewEntry()
 	filterInput.PlaceHolder = "Filter"

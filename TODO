@@ -1,3 +1,5 @@
 // TODO
-// 1) Need to cache book covers
 // 2) Implement convert function. PDF to EPUB, DJVU, KEPUB
+3) Add button in library to open folder
+4) Add ability to favorite books
+5) Some kind of download progress?

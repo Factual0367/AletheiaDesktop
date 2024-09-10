@@ -24,12 +24,12 @@ func main() {
 	myWindow := myApp.NewWindow("Aletheia")
 	checkFirstRun()
 
-	searchPage := views.CreateSearchView()
+	searchView := views.CreateSearchView()
 	//settingsPage := ui.CreateSettingsTab()
-	//libraryPage := ui.CreateLibraryView()
+	libraryView := views.CreateLibraryView()
 	tabs := container.NewAppTabs(
-		searchPage,
-		//libraryPage,
+		searchView,
+		libraryView,
 		//settingsPage,
 	)
 

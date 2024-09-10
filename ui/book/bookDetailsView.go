@@ -100,9 +100,19 @@ func createBookDetailsBottomView(book search.Book) *fyne.Container {
 	return bottomView
 }
 
-func CreateBookDetailsView(book search.Book) *fyne.Container {
+func CreateBookDetailsView(book search.Book, isDefaultBook bool) *fyne.Container {
+	var bottomView *fyne.Container
+
+	if isDefaultBook {
+		// no details to show
+		bottomView = container.NewVBox(
+			widget.NewLabel("Select a book to view details"))
+	} else {
+		bottomView = createBookDetailsBottomView(book)
+
+	}
+
 	topView := createBookDetailsTopView(book)
-	bottomView := createBookDetailsBottomView(book)
 	detailsSplit := container.NewVSplit(topView, bottomView)
 	detailsSplit.SetOffset(0.25)
 	detailsSplitContainer := container.NewStack(detailsSplit)

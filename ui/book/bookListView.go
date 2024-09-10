@@ -17,8 +17,8 @@ import (
 
 func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
-		"%s by %s",
-		book.Title, book.Author)
+		"%s\n%s\nFiletype: %s\nFilesize: %s",
+		book.Title, book.Author, book.Extension, book.Size)
 
 	bookDetailsLabelContainer := container.NewVBox()
 	bookDetailsLabel := widget.NewLabelWithStyle(bookDetailsString, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
@@ -44,9 +44,8 @@ func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container)
 
 	moreInformationButton := widget.NewButtonWithIcon("", theme.InfoIcon(), func() {
 		DetailsContainer.Objects = nil
-
 		// new content for the selected book
-		newDetailsView := CreateBookDetailsView(book)
+		newDetailsView := CreateBookDetailsView(book, false)
 		DetailsContainer.Add(newDetailsView)
 
 		DetailsContainer.Refresh()

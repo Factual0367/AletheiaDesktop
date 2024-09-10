@@ -14,6 +14,9 @@ import (
 	"log"
 )
 
+// cache images after first run
+var coverImageCache = make(map[string]*fyne.Container)
+
 func CreateBookLibraryContainer(book search.Book) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",
@@ -42,7 +45,11 @@ func CreateBookLibraryContainer(book search.Book) *fyne.Container {
 	border.StrokeWidth = 2
 	border.CornerRadius = 10
 
-	bookCover := createBookDetailsTopView(book)
+	bookCover, ok := coverImageCache[book.ID]
+	if !ok {
+		bookCover = createBookDetailsTopView(book)
+		coverImageCache[book.ID] = bookCover
+	}
 
 	borderedContainer := container.NewStack(border, container.NewVBox(bookDetailsLabel, buttonContainer))
 	borderedContainerWithCover := container.NewHSplit(bookCover, borderedContainer)

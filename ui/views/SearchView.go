@@ -41,7 +41,7 @@ func createDefaultDetailsView() *fyne.Container {
 		Filepath:   "",
 		Downloaded: false,
 	}
-	defaultDetailsView := book2.CreateBookDetailsView(defaultBook)
+	defaultDetailsView := book2.CreateBookDetailsView(defaultBook, true)
 	defaultDetailsViewContainer := container.NewVBox(defaultDetailsView)
 	return defaultDetailsViewContainer
 }
@@ -105,7 +105,7 @@ func CreateSearchView() *container.TabItem {
 		detailsContainer,
 		searchContent,
 	)
-	splitView.SetOffset(0.10)
+	splitView.SetOffset(0.20)
 
 	return container.NewTabItemWithIcon("Search", theme.SearchIcon(), splitView)
 }

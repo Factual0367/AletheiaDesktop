@@ -5,6 +5,7 @@ import (
 	book2 "AletheiaDesktop/ui/book"
 	"AletheiaDesktop/util/database"
 	"AletheiaDesktop/util/shared"
+	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -16,6 +17,12 @@ import (
 
 func loadSavedBooks() (map[string]*search.Book, error) {
 	userData, err := database.ReadDatabaseFile()
+
+	if len(userData) == 0 {
+		fmt.Println(len(userData))
+		userData, err = database.ReadDatabaseFile()
+	}
+
 	if err != nil {
 		return nil, err
 	}

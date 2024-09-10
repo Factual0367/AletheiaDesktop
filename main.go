@@ -25,12 +25,12 @@ func main() {
 	checkFirstRun()
 
 	searchView := views.CreateSearchView()
-	//settingsPage := ui.CreateSettingsTab()
+	settingsView := views.CreateSettingsView()
 	libraryView := views.CreateLibraryView()
 	tabs := container.NewAppTabs(
 		searchView,
 		libraryView,
-		//settingsPage,
+		settingsView,
 	)
 
 	tabs.SetTabLocation(container.TabLocationTop)

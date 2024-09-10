@@ -6,12 +6,14 @@ require (
 	fyne.io/fyne/v2 v2.5.1
 	github.com/gen2brain/beeep v0.0.0-20240516210008-9c006672e7f4
 	github.com/onurhanak/libgenapi v0.0.0-20240831180235-d9b33c006aa6
+	github.com/sqweek/dialog v0.0.0-20240226140203-065105509627
 )
 
 require (
 	fyne.io/systray v1.11.0 // indirect
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/PuerkitoBio/goquery v1.9.2 // indirect
+	github.com/TheTitanrain/w32 v0.0.0-20180517000239-4f5cfb03fabf // indirect
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/antchfx/htmlquery v1.3.2 // indirect
 	github.com/antchfx/xmlquery v1.4.1 // indirect

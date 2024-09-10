@@ -17,7 +17,7 @@ func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Cont
 
 	for _, book := range query.Results {
 		convertedBook := search.Book{
-			Book:       book, // assign libgenapi.Book
+			Book:       book, // extend libgenapi.Book
 			Filename:   "",   // initialize with dummy values
 			Filepath:   "",
 			Downloaded: false,
@@ -62,8 +62,8 @@ func createSearchBar(onSearch func()) (searchInput *widget.Entry, searchButton *
 }
 
 func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select) *fyne.Container {
-	
-	searchInputContainer := container.NewCenter(searchInput)
+
+	searchInputContainer := container.NewStack(searchInput)
 	searchInputContainer.MinSize()
 	topContent := container.NewGridWithColumns(2, searchInputContainer, container.NewHBox(searchButton, searchTypeWidget, layout.NewSpacer()))
 	return topContent

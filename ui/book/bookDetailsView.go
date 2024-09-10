@@ -33,10 +33,7 @@ func createBookDetailsTopView(book search.Book) *fyne.Container {
 	return topView
 }
 
-func createBookDetailsBottomView(book search.Book) *fyne.Container {
-	var bookDetailsString string
-	var bottomView *fyne.Container
-	var bookDetailsLabel *widget.Label
+func createDownloadButton(book search.Book) *widget.Button {
 	var downloadButton *widget.Button
 
 	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {
@@ -52,17 +49,19 @@ func createBookDetailsBottomView(book search.Book) *fyne.Container {
 			}
 		}()
 	})
+	return downloadButton
+}
 
-	if len(book.Author) > 0 {
-		bookDetailsString = fmt.Sprintf(
-			"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",
-			book.Title, book.Author, book.Extension, book.Size, book.Language, book.Pages, book.Publisher)
-		bookDetailsLabel = widget.NewLabel(bookDetailsString)
-		bottomView = container.NewVBox(
-			bookDetailsLabel,
-			downloadButton,
-		)
-	} else {
+func createBookDetailsBottomView(book search.Book) *fyne.Container {
+	var bookDetailsString string
+	var bottomView *fyne.Container
+	var bookDetailsLabel *widget.Label
+
+	downloadButton := createDownloadButton(book)
+
+	if book.Title == "" {
+		// this is the default view
+		// user not having selected a book
 		bookDetailsString = fmt.Sprintf(
 			"Select a book to view details",
 		)
@@ -70,7 +69,32 @@ func createBookDetailsBottomView(book search.Book) *fyne.Container {
 		bottomView = container.NewVBox(
 			bookDetailsLabel,
 		)
+		return bottomView
 	}
+
+	bookDetailsString = fmt.Sprintf(
+		"Title: %s\n"+
+			"Author: %s\n"+
+			"Filetype: %s\n"+
+			"Filesize: %s\n"+
+			"Language: %s\n"+
+			"Pages: %s\n"+
+			"Publisher: %s",
+		book.Title,
+		book.Author,
+		book.Extension,
+		book.Size,
+		book.Language,
+		book.Pages,
+		book.Publisher,
+	)
+
+	bookDetailsLabel = widget.NewLabel(bookDetailsString)
+	bottomView = container.NewVBox(
+		bookDetailsLabel,
+		downloadButton,
+	)
+
 	return bottomView
 }
 

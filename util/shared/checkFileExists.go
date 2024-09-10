@@ -1,4 +1,4 @@
-package configUtil
+package shared
 
 import "os"
 

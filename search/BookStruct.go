@@ -66,5 +66,6 @@ func (book *Book) download() bool {
 	}
 
 	book.Downloaded = book.saveToFile(response)
+
 	return book.Downloaded
 }

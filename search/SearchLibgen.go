@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func searchLibgen(searchQuery string, queryType string) *libgenapi.Query {
+func SearchLibgen(searchQuery string, queryType string) *libgenapi.Query {
 	query := libgenapi.NewQuery(strings.ToLower(queryType), searchQuery, 25)
 	err := query.Search()
 	if err != nil {

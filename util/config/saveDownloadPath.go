@@ -1,4 +1,4 @@
-package configUtil
+package config
 
 import "log"
 

@@ -28,7 +28,7 @@ func main() {
 
 	searchView := views.CreateSearchView()
 	settingsView := views.CreateSettingsView()
-	libraryView := views.CreateLibraryView()
+	libraryView := views.CreateLibraryView(myWindow)
 
 	tabs := container.NewAppTabs(
 		searchView,
@@ -40,7 +40,7 @@ func main() {
 	// when the user downloads a book
 	tabs.OnSelected = func(tab *container.TabItem) {
 		if tab.Icon == theme.StorageIcon() {
-			libraryView = views.CreateLibraryView()
+			libraryView = views.CreateLibraryView(myWindow)
 			tabs.Items[1] = libraryView
 			tabs.Refresh()
 		}

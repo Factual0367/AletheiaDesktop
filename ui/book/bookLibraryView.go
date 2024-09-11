@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
@@ -17,7 +18,7 @@ import (
 // cache images after first run
 var coverImageCache = make(map[string]*fyne.Container)
 
-func CreateBookLibraryContainer(book search.Book) *fyne.Container {
+func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",
 		book.Title, book.Author, book.Extension, book.Size, book.Language, book.Pages, book.Publisher,
@@ -36,8 +37,15 @@ func CreateBookLibraryContainer(book search.Book) *fyne.Container {
 	})
 
 	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {})
-	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {})
 
+	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
+		confirmDialog := dialog.NewConfirm("Please confirm", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {
+			if b {
+				shared.DeleteBook(book)
+			}
+		}, appWindow)
+		confirmDialog.Show()
+	})
 	buttonContainer := container.NewHBox(openButton, convertButton, deleteButton, layout.NewSpacer())
 
 	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})

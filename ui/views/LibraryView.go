@@ -33,7 +33,7 @@ func loadSavedBooks() (map[string]*search.Book, error) {
 	return nil, nil
 }
 
-func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filter string) {
+func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window) {
 	grid.Objects = nil
 
 	for _, book := range books {
@@ -43,7 +43,7 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 				log.Printf("Could not check if book exists for book: %s", book.Title)
 			}
 			if bookFileExists {
-				bookLibraryContainer := book2.CreateBookLibraryContainer(*book)
+				bookLibraryContainer := book2.CreateBookLibraryContainer(*book, appWindow)
 				grid.Add(bookLibraryContainer)
 			}
 
@@ -52,7 +52,7 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 	grid.Refresh()
 }
 
-func CreateLibraryView() *container.TabItem {
+func CreateLibraryView(appWindow fyne.Window) *container.TabItem {
 	filterInput := widget.NewEntry()
 	filterInput.PlaceHolder = "Filter"
 	libraryViewGrid := container.NewVBox()
@@ -63,7 +63,7 @@ func CreateLibraryView() *container.TabItem {
 	}
 
 	if savedBooks != nil {
-		updateLibraryGrid(libraryViewGrid, savedBooks, "")
+		updateLibraryGrid(libraryViewGrid, savedBooks, "", appWindow)
 	}
 
 	var typingTimer *time.Timer
@@ -75,7 +75,7 @@ func CreateLibraryView() *container.TabItem {
 
 		typingTimer = time.AfterFunc(500*time.Millisecond, func() { // 500ms delay so filtering does not get laggy
 			if savedBooks != nil {
-				updateLibraryGrid(libraryViewGrid, savedBooks, filter)
+				updateLibraryGrid(libraryViewGrid, savedBooks, filter, appWindow)
 			}
 		})
 	}

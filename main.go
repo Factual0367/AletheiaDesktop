@@ -5,6 +5,7 @@ import (
 	"AletheiaDesktop/util/config"
 	"AletheiaDesktop/util/database"
 	"AletheiaDesktop/util/shared"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -48,6 +49,6 @@ func main() {
 	tabs.SetTabLocation(container.TabLocationTop)
 
 	myWindow.SetContent(tabs)
-	myWindow.Resize(fyne.NewSize(900, 600)) // Set a decent window size
+	myWindow.Resize(fyne.NewSize(1200, 800))
 	myWindow.ShowAndRun()
 }

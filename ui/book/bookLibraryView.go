@@ -29,7 +29,7 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.C
 
 	openButton := widget.NewButtonWithIcon("", theme.FileIcon(), func() {
 		go func() {
-			err := shared.OpenBookWithDefaultApp(book.Filepath)
+			err := shared.OpenWithDefaultApp(book.Filepath)
 			if err != nil {
 				log.Fatalln("Could not open book with default application.")
 			}
@@ -46,7 +46,12 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.C
 		}, appWindow)
 		confirmDialog.Show()
 	})
-	buttonContainer := container.NewHBox(openButton, convertButton, deleteButton, layout.NewSpacer())
+
+	openLibraryFolderButton := widget.NewButtonWithIcon("", theme.FolderOpenIcon(), func() {
+		shared.OpenLibraryFolder()
+	})
+
+	buttonContainer := container.NewHBox(openButton, openLibraryFolderButton, convertButton, deleteButton, layout.NewSpacer())
 
 	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
 	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}

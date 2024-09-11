@@ -4,7 +4,7 @@ import (
 	"github.com/skratchdot/open-golang/open"
 )
 
-func OpenBookWithDefaultApp(filepath string) error {
+func OpenWithDefaultApp(filepath string) error {
 	err := open.Run(filepath)
 	return err
 }

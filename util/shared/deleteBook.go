@@ -2,7 +2,6 @@ package shared
 
 import (
 	"AletheiaDesktop/search"
-	"AletheiaDesktop/util/database"
 	"log"
 	"os"
 )
@@ -14,5 +13,4 @@ func DeleteBook(book search.Book) {
 	if err != nil {
 		log.Println("Unable to delete file", book.Filepath)
 	}
-	database.UpdateDatabase(book, false) // false to remove the book
 }

@@ -39,7 +39,7 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.C
 	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {})
 
 	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
-		confirmDialog := dialog.NewConfirm("Please confirm", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {
+		confirmDialog := dialog.NewConfirm("Are you sure?", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {
 			if b {
 				shared.DeleteBook(book)
 			}

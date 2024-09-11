@@ -43,7 +43,7 @@ func createDownloadButton(book search.Book) *widget.Button {
 			if success {
 				shared.SendNotification(book.Title, "Downloaded successfully")
 				downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
-				database.UpdateDatabase(book)
+				database.UpdateDatabase(book, true) // true to add, false to remove from database
 			} else {
 				shared.SendNotification(book.Title, "Download failed")
 				log.Println(fmt.Sprintf("Download failed: %s"))

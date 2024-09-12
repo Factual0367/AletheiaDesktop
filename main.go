@@ -29,10 +29,12 @@ func main() {
 	searchView := views.CreateSearchView()
 	settingsView := views.CreateSettingsView()
 	libraryView := views.CreateLibraryView(myWindow)
+	bookmarksView := views.CreateBookmarksView(myWindow)
 
 	tabs := container.NewAppTabs(
 		searchView,
 		libraryView,
+		bookmarksView,
 		settingsView,
 	)
 

@@ -41,7 +41,7 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 			bookFileExists, err := shared.Exists(book.Filepath)
 			if err != nil {
 				log.Printf("Book does not exist, removing book from database. Title: %s", book.Title)
-				database.UpdateDatabase(*book, false)
+				database.UpdateDatabase(*book, false, "downloaded")
 			}
 			if bookFileExists {
 				bookLibraryContainer := book2.CreateBookLibraryContainer(*book, appWindow)

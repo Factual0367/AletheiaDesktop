@@ -29,11 +29,12 @@ func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container)
 
 	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {
 		go func() {
+			shared.SendNotification(book.Title, "Downloading")
 			success := book.Download()
 			if success {
 				shared.SendNotification(book.Title, "Downloaded successfully")
 				downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
-				database.UpdateDatabase(book, true) // true to add a book, false to remove
+				database.UpdateDatabase(book, true, "downloaded") // true to add a book, false to remove
 			} else {
 				shared.SendNotification(book.Title, "Download failed")
 				log.Println(fmt.Sprintf("Download failed: %s"))
@@ -51,8 +52,15 @@ func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container)
 		DetailsContainer.Refresh()
 	})
 
+	var favoriteButton *widget.Button
+	favoriteButton = widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
+		database.UpdateDatabase(book, true, "favorited")
+		favoriteButton.SetIcon(theme.ContentRemoveIcon())
+	})
+
 	buttonContainer := container.NewHBox(
 		moreInformationButton,
+		favoriteButton,
 		downloadButton,
 		layout.NewSpacer(),
 	)

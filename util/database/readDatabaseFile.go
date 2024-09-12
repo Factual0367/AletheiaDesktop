@@ -35,19 +35,29 @@ func ReadDatabaseFile() (map[string]interface{}, error) {
 			return nil, fmt.Errorf("Unmarshal config file error: %v", unmarshalErr)
 		}
 
-		if savedBooksRaw, ok := userData["savedBooks"]; ok {
-			savedBooks := make(map[string]*search.Book)
-			savedBooksBytes, marshalErr := json.Marshal(savedBooksRaw)
-			if marshalErr != nil {
-				return nil, fmt.Errorf("Error marshaling savedBooks: %v", marshalErr)
-			}
+		unmarshalBooks := func(key string) error {
+			if booksRaw, ok := userData[key]; ok {
+				books := make(map[string]*search.Book)
+				booksBytes, marshalErr := json.Marshal(booksRaw)
+				if marshalErr != nil {
+					return fmt.Errorf("Error marshaling %s: %v", key, marshalErr)
+				}
 
-			unmarshalErr = json.Unmarshal(savedBooksBytes, &savedBooks)
-			if unmarshalErr != nil {
-				return nil, fmt.Errorf("Unmarshal savedBooks error: %v", unmarshalErr)
-			}
+				unmarshalErr := json.Unmarshal(booksBytes, &books)
+				if unmarshalErr != nil {
+					return fmt.Errorf("Unmarshal %s error: %v", key, unmarshalErr)
+				}
 
-			userData["savedBooks"] = savedBooks
+				userData[key] = books
+			}
+			return nil
+		}
+
+		if err := unmarshalBooks("savedBooks"); err != nil {
+			return nil, err
+		}
+		if err := unmarshalBooks("favoriteBooks"); err != nil {
+			return nil, err
 		}
 
 		return userData, nil

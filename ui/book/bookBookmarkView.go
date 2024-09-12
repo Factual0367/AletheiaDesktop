@@ -2,12 +2,12 @@ package book
 
 import (
 	"AletheiaDesktop/search"
+	"AletheiaDesktop/util/database"
 	"AletheiaDesktop/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
@@ -24,31 +24,29 @@ func CreateBookBookmarksContainer(book search.Book, appWindow fyne.Window) *fyne
 	bookDetailsLabel := widget.NewLabelWithStyle(bookDetailsString, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
 	bookDetailsLabel.Wrapping = fyne.TextWrapWord
 
-	openButton := widget.NewButtonWithIcon("", theme.FileIcon(), func() {
+	unfavoriteButton := widget.NewButtonWithIcon("", theme.ContentRemoveIcon(), func() {
+		database.UpdateDatabase(book, false, "favorited")
+	})
+
+	var downloadButton *widget.Button
+
+	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {
 		go func() {
-			err := shared.OpenWithDefaultApp(book.Filepath)
-			if err != nil {
-				log.Fatalln("Could not open book with default application.")
+			shared.SendNotification(book.Title, "Downloading")
+			success := book.Download()
+			if success {
+				shared.SendNotification(book.Title, "Downloaded successfully")
+				downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
+				database.UpdateDatabase(book, true, "downloaded") // true to add a book, false to remove
+			} else {
+				shared.SendNotification(book.Title, "Download failed")
+				log.Println(fmt.Sprintf("Download failed: %s"))
+				downloadButton.SetIcon(theme.ErrorIcon())
 			}
 		}()
 	})
 
-	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {})
-
-	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
-		confirmDialog := dialog.NewConfirm("Are you sure?", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {
-			if b {
-				shared.DeleteBook(book)
-			}
-		}, appWindow)
-		confirmDialog.Show()
-	})
-
-	openLibraryFolderButton := widget.NewButtonWithIcon("", theme.FolderOpenIcon(), func() {
-		shared.OpenLibraryFolder()
-	})
-
-	buttonContainer := container.NewHBox(openButton, openLibraryFolderButton, convertButton, deleteButton, layout.NewSpacer())
+	buttonContainer := container.NewHBox(unfavoriteButton, downloadButton, layout.NewSpacer())
 
 	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
 	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}

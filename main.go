@@ -45,6 +45,10 @@ func main() {
 			libraryView = views.CreateLibraryView(myWindow)
 			tabs.Items[1] = libraryView
 			tabs.Refresh()
+		} else if tab.Icon == theme.ContentAddIcon() {
+			bookmarksView = views.CreateBookmarksView(myWindow)
+			tabs.Items[2] = bookmarksView
+			tabs.Refresh()
 		}
 	}
 

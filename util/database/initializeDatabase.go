@@ -1,13 +1,14 @@
 package database
 
 import (
-	"github.com/onurhanak/libgenapi"
+	"AletheiaDesktop/search"
 	"log"
 )
 
 func InitializeDatabase() {
 	initialEmptyDatabase := map[string]interface{}{
-		"savedBooks": map[string]*libgenapi.Book{},
+		"savedBooks":    map[string]*search.Book{},
+		"favoriteBooks": map[string]*search.Book{},
 	}
 
 	fileWriteErr := WriteDatabaseToFile(initialEmptyDatabase)

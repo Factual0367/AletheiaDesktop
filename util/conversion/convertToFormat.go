@@ -2,9 +2,7 @@ package conversion
 
 import (
 	"AletheiaDesktop/search"
-	"AletheiaDesktop/util/config"
 	"AletheiaDesktop/util/database"
-	"AletheiaDesktop/util/shared"
 	"fmt"
 	"os/exec"
 	"path"
@@ -27,8 +25,6 @@ func ConvertToFormat(targetFormat string, book search.Book) bool {
 	newBook.ID = fmt.Sprintf("%s-%s", newBook.ID, targetFormat)
 
 	database.UpdateDatabase(newBook, true, "downloaded")
-	downloadPath := config.GetCurrentDownloadFolder()
-	shared.OpenWithDefaultApp(downloadPath)
 
 	return true
 }

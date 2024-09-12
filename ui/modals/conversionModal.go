@@ -22,12 +22,16 @@ func conversionPopup(appWindow fyne.Window, book search.Book, modal *widget.PopU
 	})
 
 	convertButton := widget.NewButtonWithIcon("Convert", theme.ContentRedoIcon(), func() {
-		converted := conversion.ConvertToFormat(targetFormat, book)
-		if !converted {
-			shared.SendNotification("Error", "Cannot convert book. Did you select the right format?")
-		} else {
-			shared.SendNotification("Success", "Your book is converted successfully. Access it through your library.")
-		}
+		go func() {
+			converted := conversion.ConvertToFormat(targetFormat, book)
+			if !converted {
+				shared.SendNotification("Error", "Cannot convert book. Did you select the right format?")
+			} else {
+				shared.SendNotification("Success", "Your book is converted successfully. Access it through your library.")
+			}
+		}()
+		modal.Hide()
+
 	})
 
 	conversionContainer.Add(conversionLabel)

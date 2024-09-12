@@ -2,6 +2,7 @@ package book
 
 import (
 	"AletheiaDesktop/search"
+	"AletheiaDesktop/ui/modals"
 	"AletheiaDesktop/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
@@ -36,7 +37,9 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.C
 		}()
 	})
 
-	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {})
+	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {
+		modals.ShowConversionPopup(appWindow, book)
+	})
 
 	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
 		confirmDialog := dialog.NewConfirm("Are you sure?", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {

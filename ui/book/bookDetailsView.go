@@ -93,6 +93,8 @@ func createBookDetailsBottomView(book search.Book) *fyne.Container {
 	)
 
 	bookDetailsLabel = widget.NewLabel(bookDetailsString)
+	bookDetailsLabel.Wrapping = fyne.TextWrapWord
+
 	bottomView = container.NewVBox(
 		bookDetailsLabel,
 		downloadButton,

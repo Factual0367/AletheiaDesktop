@@ -21,7 +21,17 @@ type Book struct {
 
 func (book *Book) ConstructFilename() string {
 	filename := fmt.Sprintf("%s - %s.%s", book.Author, book.Title, book.Extension)
+	// sanitize filename for Windows
 	filename = strings.ReplaceAll(filename, "/", "_")
+	filename = strings.ReplaceAll(filename, "\\", "_")
+	filename = strings.ReplaceAll(filename, ":", "_")
+	filename = strings.ReplaceAll(filename, "*", "_")
+	filename = strings.ReplaceAll(filename, "?", "_")
+	filename = strings.ReplaceAll(filename, "\"", "_")
+	filename = strings.ReplaceAll(filename, "<", "_")
+	filename = strings.ReplaceAll(filename, ">", "_")
+	filename = strings.ReplaceAll(filename, "|", "_")
+
 	filename = strings.TrimSpace(filename)
 	book.Filename = filename
 	return filename
@@ -38,7 +48,7 @@ func (book *Book) SaveToFile(response *http.Response) bool {
 	// create the file
 	out, err := os.Create(book.Filepath)
 	if err != nil {
-		log.Fatalln(fmt.Sprintf("Could not create a file for the book: %s", err))
+		log.Println(fmt.Sprintf("Could not create a file for the book: %s", err))
 		return false
 	}
 	defer out.Close()
@@ -47,7 +57,7 @@ func (book *Book) SaveToFile(response *http.Response) bool {
 	// newly created file
 	_, err = io.Copy(out, response.Body)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return false
 	}
 

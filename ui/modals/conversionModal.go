@@ -16,7 +16,7 @@ func conversionPopup(appWindow fyne.Window, book search.Book, modal *widget.PopU
 	var targetFormat string
 	conversionContainer := container.NewVBox()
 	conversionLabel := widget.NewLabel("Which format do you want to convert to?")
-	conversionSelector := widget.NewSelect([]string{"EPUB", "PDF", "KEPUB", "DJVU"}, func(s string) {
+	conversionSelector := widget.NewSelect([]string{"EPUB", "PDF", "MOBI", "DJVU"}, func(s string) {
 		targetFormat = s
 		fmt.Println(s)
 	})
@@ -24,9 +24,9 @@ func conversionPopup(appWindow fyne.Window, book search.Book, modal *widget.PopU
 	convertButton := widget.NewButtonWithIcon("Convert", theme.ContentRedoIcon(), func() {
 		converted := conversion.ConvertToFormat(targetFormat, book)
 		if !converted {
-			shared.SendNotification("Error", "Cannot convert book, do you have Calibre installed?")
+			shared.SendNotification("Error", "Cannot convert book. Did you select the right format?")
 		} else {
-			shared.SendNotification("Success", "Your book is converted successfully.")
+			shared.SendNotification("Success", "Your book is converted successfully. Access it through your library.")
 		}
 	})
 

@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-func SearchLibgen(searchQuery string, queryType string) *libgenapi.Query {
-	query := libgenapi.NewQuery(strings.ToLower(queryType), searchQuery, 25)
+func SearchLibgen(searchQuery string, queryType string, numberOfResults int) *libgenapi.Query {
+	query := libgenapi.NewQuery(strings.ToLower(queryType), searchQuery, numberOfResults)
 	err := query.Search()
 	if err != nil {
 		log.Println(fmt.Sprintf("Error : %s. Libgen API did not return any results.", err))

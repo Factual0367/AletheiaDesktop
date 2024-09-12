@@ -10,7 +10,11 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/onurhanak/libgenapi"
 	"log"
+	"strconv"
 )
+
+var searchType string = "Default"
+var numberOfResults int = 25
 
 func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Container) *fyne.Container {
 	bookGrid := container.NewVBox()
@@ -46,7 +50,7 @@ func createDefaultDetailsView() *fyne.Container {
 	return defaultDetailsViewContainer
 }
 
-func createSearchBar(onSearch func()) (searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select) {
+func createSearchBar(onSearch func()) (searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select, numberOfResultsSelector *widget.Select) {
 	searchInput = widget.NewEntry()
 	searchInput.SetPlaceHolder("Enter search query")
 
@@ -54,18 +58,25 @@ func createSearchBar(onSearch func()) (searchInput *widget.Entry, searchButton *
 	searchInput.OnSubmitted = func(text string) { onSearch() }
 
 	searchTypeWidget = widget.NewSelect([]string{"Default", "Author", "Title"}, func(value string) {
+		searchType = value
 		log.Println("Select set to", value)
 	})
 	searchTypeWidget.PlaceHolder = "Default"
 
-	return searchInput, searchButton, searchTypeWidget
+	numberOfResultsSelector = widget.NewSelect([]string{"25", "50", "100"}, func(value string) {
+		numberOfResults, _ = strconv.Atoi(value) // handle this
+		log.Println("Number of results set to", value)
+	})
+	numberOfResultsSelector.PlaceHolder = "25"
+
+	return searchInput, searchButton, searchTypeWidget, numberOfResultsSelector
 }
 
-func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select) *fyne.Container {
+func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select, numberOfResultsSelector *widget.Select) *fyne.Container {
 
 	searchInputContainer := container.NewStack(searchInput)
 	searchInputContainer.MinSize()
-	topContent := container.NewGridWithColumns(2, searchInputContainer, container.NewHBox(searchButton, searchTypeWidget, layout.NewSpacer()))
+	topContent := container.NewGridWithColumns(2, searchInputContainer, container.NewHBox(searchButton, searchTypeWidget, numberOfResultsSelector, layout.NewSpacer()))
 	return topContent
 }
 
@@ -74,7 +85,7 @@ func executeSearch(searchInput *widget.Entry, searchType string, resultsContaine
 	resultsContainer.Add(widget.NewLabel("")) // padding
 
 	go func() {
-		query := search.SearchLibgen(searchInput.Text, searchType)
+		query := search.SearchLibgen(searchInput.Text, searchType, numberOfResults)
 		if query != nil {
 			resultsContainer.Add(constructBookContainers(query, defaultDetailsContainer))
 		}
@@ -87,14 +98,13 @@ func CreateSearchView() *container.TabItem {
 	resultsContentScrollable := container.NewVScroll(resultsContainer)
 	detailsContainer := createDefaultDetailsView()
 
-	var searchType = "Default"
-
 	var searchInput = widget.NewEntry()
-	searchInput, searchButton, searchTypeWidget := createSearchBar(func() {
+
+	searchInput, searchButton, searchTypeWidget, numberOfResultsSelector := createSearchBar(func() {
 		executeSearch(searchInput, searchType, resultsContainer, detailsContainer)
 	})
 
-	topContent := layoutTopContent(searchInput, searchButton, searchTypeWidget)
+	topContent := layoutTopContent(searchInput, searchButton, searchTypeWidget, numberOfResultsSelector)
 
 	searchContent := container.NewBorder(
 		topContent, nil, nil, nil, // bottom, left, right are nil

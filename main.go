@@ -26,12 +26,14 @@ func main() {
 	myWindow := myApp.NewWindow("Aletheia")
 	checkFirstRun()
 
+	tabs := container.NewAppTabs()
+
 	searchView := views.CreateSearchView()
 	settingsView := views.CreateSettingsView()
-	libraryView := views.CreateLibraryView(myWindow)
-	bookmarksView := views.CreateBookmarksView(myWindow)
+	libraryView := views.CreateLibraryView(myWindow, tabs)
+	bookmarksView := views.CreateBookmarksView(myWindow, tabs)
 
-	tabs := container.NewAppTabs(
+	tabs = container.NewAppTabs(
 		searchView,
 		libraryView,
 		bookmarksView,
@@ -42,11 +44,11 @@ func main() {
 	// when the user downloads a book
 	tabs.OnSelected = func(tab *container.TabItem) {
 		if tab.Icon == theme.StorageIcon() {
-			libraryView = views.CreateLibraryView(myWindow)
+			libraryView = views.CreateLibraryView(myWindow, tabs)
 			tabs.Items[1] = libraryView
 			tabs.Refresh()
 		} else if tab.Icon == theme.ContentAddIcon() {
-			bookmarksView = views.CreateBookmarksView(myWindow)
+			bookmarksView = views.CreateBookmarksView(myWindow, tabs)
 			tabs.Items[2] = bookmarksView
 			tabs.Refresh()
 		}

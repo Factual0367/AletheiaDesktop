@@ -45,9 +45,28 @@ func updateBookmarksGrid(grid *fyne.Container, books map[string]*search.Book, fi
 	grid.Refresh()
 }
 
-func CreateBookmarksView(appWindow fyne.Window) *container.TabItem {
+func refreshBookmarksViewButton(appWindow fyne.Window, tabs *container.AppTabs) *widget.Button {
+
+	refreshButton := widget.NewButtonWithIcon("", theme.ViewRefreshIcon(), func() {
+		newBookmarksView := CreateBookmarksView(appWindow, tabs)
+		tabs.Items[2] = newBookmarksView
+		tabs.Refresh()
+	})
+
+	return refreshButton
+}
+
+func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
 	filterInput := widget.NewEntry()
 	filterInput.PlaceHolder = "Filter"
+	filterInput.Resize(fyne.NewSize(800, filterInput.MinSize().Height)) // Set the desired width
+
+	refreshButton := refreshBookmarksViewButton(appWindow, tabs)
+	refreshButton.Resize(fyne.NewSize(40, filterInput.MinSize().Height))
+	refreshButton.Move(fyne.NewPos(805, 0))
+
+	topWidgets := container.NewWithoutLayout(filterInput, refreshButton)
+
 	bookmarksViewGrid := container.NewVBox()
 
 	favoriteBooks, err := loadFavoriteBooks()
@@ -73,7 +92,7 @@ func CreateBookmarksView(appWindow fyne.Window) *container.TabItem {
 		})
 	}
 
-	bookmarksViewLayout := container.NewBorder(filterInput, nil, nil, nil, bookmarksViewGrid)
+	bookmarksViewLayout := container.NewBorder(topWidgets, nil, nil, nil, bookmarksViewGrid)
 
 	return container.NewTabItemWithIcon("Bookmarks", theme.ContentAddIcon(), bookmarksViewLayout)
 }

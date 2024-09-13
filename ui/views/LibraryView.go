@@ -53,9 +53,28 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 	grid.Refresh()
 }
 
-func CreateLibraryView(appWindow fyne.Window) *container.TabItem {
+func refreshLibraryViewButton(appWindow fyne.Window, tabs *container.AppTabs) *widget.Button {
+
+	refreshButton := widget.NewButtonWithIcon("", theme.ViewRefreshIcon(), func() {
+		newLibraryView := CreateLibraryView(appWindow, tabs)
+		tabs.Items[1] = newLibraryView
+		tabs.Refresh()
+	})
+
+	return refreshButton
+}
+
+func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
 	filterInput := widget.NewEntry()
 	filterInput.PlaceHolder = "Filter"
+	filterInput.Resize(fyne.NewSize(800, filterInput.MinSize().Height)) // Set the desired width
+
+	refreshButton := refreshLibraryViewButton(appWindow, tabs)
+	refreshButton.Resize(fyne.NewSize(40, filterInput.MinSize().Height))
+	refreshButton.Move(fyne.NewPos(805, 0))
+
+	topWidgets := container.NewWithoutLayout(filterInput, refreshButton)
+
 	libraryViewGrid := container.NewVBox()
 
 	savedBooks, err := loadSavedBooks()
@@ -81,7 +100,7 @@ func CreateLibraryView(appWindow fyne.Window) *container.TabItem {
 		})
 	}
 
-	libraryViewLayout := container.NewBorder(filterInput, nil, nil, nil, libraryViewGrid)
+	libraryViewLayout := container.NewBorder(topWidgets, nil, nil, nil, libraryViewGrid)
 
 	return container.NewTabItemWithIcon("Library", theme.StorageIcon(), libraryViewLayout)
 }

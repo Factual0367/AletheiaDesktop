@@ -5,7 +5,7 @@
 </sub>
 <h1 align="center">Aletheia Desktop</h1>
 
-<p align='center'><img  src="assets/screenshot1.png" height="235" width="auto" /><img  src="assets/screenshot2.png" height="235" width="auto" /></p>
+<p align='center'><img  src="assets/screenshot1.png" height="230" width="auto" /><img  src="assets/screenshot2.png" height="230" width="auto" /></p>
 
 
 Aletheia is a desktop application for Library Genesis written in Go. It supports downloading books, converting them to different 

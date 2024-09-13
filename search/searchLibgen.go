@@ -7,13 +7,12 @@ import (
 	"strings"
 )
 
-type QueryConstructor func(queryType, searchQuery string, numOfResults int) *libgenapi.Query
-
-func SearchLibgen(searchQuery string, queryType string, numberOfResults int, newQuery QueryConstructor) (*libgenapi.Query, error) {
-	query := newQuery(strings.ToLower(queryType), searchQuery, numberOfResults)
+func SearchLibgen(searchQuery string, queryType string, numberOfResults int) (*libgenapi.Query, error) {
+	query := libgenapi.NewQuery(strings.ToLower(queryType), searchQuery, numberOfResults)
 	err := query.Search()
 	if err != nil {
 		log.Println(fmt.Sprintf("Error : %s. Libgen API did not return any results.", err))
+
 		query.Results = []libgenapi.Book{}
 		return query, err
 	}

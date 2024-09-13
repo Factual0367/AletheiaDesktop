@@ -1,7 +1,6 @@
 package search
 
 import (
-	"AletheiaDesktop/util/shared"
 	"fmt"
 	"github.com/onurhanak/libgenapi"
 	"log"
@@ -13,7 +12,7 @@ func SearchLibgen(searchQuery string, queryType string, numberOfResults int) (*l
 	err := query.Search()
 	if err != nil {
 		log.Println(fmt.Sprintf("Error : %s. Libgen API did not return any results.", err))
-		shared.SendNotification("Failed", "Library Genesis is not responding.")
+
 		query.Results = []libgenapi.Book{}
 		return query, err
 	}

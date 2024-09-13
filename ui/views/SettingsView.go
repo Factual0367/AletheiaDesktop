@@ -15,6 +15,7 @@ func createDownloadLocationContainer() *fyne.Container {
 	downloadDir := config.GetCurrentDownloadFolder()
 	currentLibraryLocationMsg := "Current Library Location: "
 	currentDownloadDirLabel := widget.NewLabel(currentLibraryLocationMsg)
+	currentDownloadDirLabel.TextStyle = fyne.TextStyle{Bold: true}
 	downloadDirLabel := widget.NewLabel(downloadDir)
 
 	changeDownloadLocationButton := widget.NewButtonWithIcon("Change Library Location", theme.FolderIcon(), func() {
@@ -29,6 +30,7 @@ func createDownloadLocationContainer() *fyne.Container {
 
 func createEmailContainer() *fyne.Container {
 	emailLabel := widget.NewLabel("Email")
+	emailLabel.TextStyle = fyne.TextStyle{Bold: true}
 
 	emailEntry := widget.NewEntry()
 	userEmail := email.GetUserEmail()

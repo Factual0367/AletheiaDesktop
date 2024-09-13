@@ -55,16 +55,18 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *c
 		shared.OpenLibraryFolder()
 	})
 
-	emailBookButton := widget.NewButtonWithIcon("", theme.MailSendIcon(), func() {
+	var emailBookButton *widget.Button
+	emailBookButton = widget.NewButtonWithIcon("", theme.MailSendIcon(), func() {
 		go func() {
 			emailSent := email.SendBookEmail(book)
 			if emailSent {
 				shared.SendNotification("Success", "Your book is emailed successfully.")
+				emailBookButton.SetIcon(theme.ConfirmIcon())
 			} else {
-				shared.SendNotification("Failed", "Your book could not be emailed.")
+				shared.SendNotification("Failed", "Your book could not be emailed. Check your credentials.")
+				emailBookButton.SetIcon(theme.ErrorIcon())
 			}
 		}()
-
 	})
 
 	buttonContainer := container.NewHBox(openButton, openLibraryFolderButton, emailBookButton, convertButton, deleteButton, layout.NewSpacer())

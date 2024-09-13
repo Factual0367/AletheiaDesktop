@@ -35,6 +35,7 @@ func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container)
 				shared.SendNotification(book.Title, "Downloaded successfully")
 				downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
 				database.UpdateDatabase(book, true, "downloaded") // true to add a book, false to remove
+				downloadButton.SetIcon(theme.ConfirmIcon())
 			} else {
 				shared.SendNotification(book.Title, "Download failed")
 				log.Println(fmt.Sprintf("Download failed: %s"))

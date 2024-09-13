@@ -2,7 +2,6 @@ package views
 
 import (
 	"AletheiaDesktop/search"
-	book2 "AletheiaDesktop/ui/book"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
@@ -28,7 +27,7 @@ func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Cont
 		}
 		convertedBook.ConstructFilename()
 		convertedBook.ConstructFilepath()
-		bookItem := book2.CreateBookListContainer(convertedBook, detailsContainer)
+		bookItem := CreateBookListContainer(convertedBook, detailsContainer)
 		bookGrid.Add(bookItem)
 	}
 
@@ -45,7 +44,7 @@ func createDefaultDetailsView() *fyne.Container {
 		Filepath:   "",
 		Downloaded: false,
 	}
-	defaultDetailsView := book2.CreateBookDetailsView(defaultBook, true)
+	defaultDetailsView := CreateBookDetailsView(defaultBook, true)
 	defaultDetailsViewContainer := container.NewVBox(defaultDetailsView)
 	return defaultDetailsViewContainer
 }

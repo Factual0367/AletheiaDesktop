@@ -1,4 +1,4 @@
-package book
+package views
 
 import (
 	"AletheiaDesktop/search"
@@ -15,18 +15,15 @@ import (
 	"log"
 )
 
-func CreateBookBookmarksContainer(book search.Book, appWindow fyne.Window) *fyne.Container {
+func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
-		"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",
-		book.Title, book.Author, book.Extension, book.Size, book.Language, book.Pages, book.Publisher,
-	)
+		"%s\n%s\nFiletype: %s\nFilesize: %s",
+		book.Title, book.Author, book.Extension, book.Size)
 
+	bookDetailsLabelContainer := container.NewVBox()
 	bookDetailsLabel := widget.NewLabelWithStyle(bookDetailsString, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
 	bookDetailsLabel.Wrapping = fyne.TextWrapWord
-
-	unfavoriteButton := widget.NewButtonWithIcon("", theme.ContentRemoveIcon(), func() {
-		database.UpdateDatabase(book, false, "favorited")
-	})
+	bookDetailsLabelContainer.Add(bookDetailsLabel)
 
 	var downloadButton *widget.Button
 
@@ -46,22 +43,36 @@ func CreateBookBookmarksContainer(book search.Book, appWindow fyne.Window) *fyne
 		}()
 	})
 
-	buttonContainer := container.NewHBox(unfavoriteButton, downloadButton, layout.NewSpacer())
+	moreInformationButton := widget.NewButtonWithIcon("", theme.InfoIcon(), func() {
+		DetailsContainer.Objects = nil
+		// new content for the selected book
+		newDetailsView := CreateBookDetailsView(book, false)
+		DetailsContainer.Add(newDetailsView)
 
+		DetailsContainer.Refresh()
+	})
+
+	var favoriteButton *widget.Button
+	favoriteButton = widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
+		database.UpdateDatabase(book, true, "favorited")
+		favoriteButton.SetIcon(theme.ContentRemoveIcon())
+	})
+
+	buttonContainer := container.NewHBox(
+		moreInformationButton,
+		favoriteButton,
+		downloadButton,
+		layout.NewSpacer(),
+	)
+
+	// add some boxing
 	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
 	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}
 	border.StrokeWidth = 2
 	border.CornerRadius = 10
 
-	bookCover, ok := coverImageCache[book.ID]
-	if !ok {
-		bookCover = createBookDetailsTopView(book)
-		coverImageCache[book.ID] = bookCover
-	}
+	bookDetailsLabelContainer.Add(buttonContainer)
+	borderedContainer := container.NewStack(border, bookDetailsLabelContainer)
 
-	borderedContainer := container.NewStack(border, container.NewVBox(bookDetailsLabel, buttonContainer))
-	borderedContainerWithCover := container.NewHSplit(bookCover, borderedContainer)
-	borderedContainerWithCover.SetOffset(0.10)
-
-	return container.NewVBox(borderedContainerWithCover)
+	return borderedContainer
 }

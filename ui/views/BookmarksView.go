@@ -2,7 +2,6 @@ package views
 
 import (
 	"AletheiaDesktop/search"
-	book2 "AletheiaDesktop/ui/book"
 	"AletheiaDesktop/util/database"
 	"fmt"
 	"fyne.io/fyne/v2"
@@ -32,28 +31,27 @@ func loadFavoriteBooks() (map[string]*search.Book, error) {
 	return nil, nil
 }
 
-func updateBookmarksGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window) {
+func updateBookmarksGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.Objects = nil
 
 	for _, book := range books {
 		if strings.Contains(strings.ToLower(book.Title), strings.ToLower(filter)) {
 
-			bookLibraryContainer := book2.CreateBookBookmarksContainer(*book, appWindow)
+			bookLibraryContainer := CreateBookBookmarksContainer(*book, appWindow, tabs)
 			grid.Add(bookLibraryContainer)
 		}
 	}
 	grid.Refresh()
 }
 
-func refreshBookmarksViewButton(appWindow fyne.Window, tabs *container.AppTabs) *widget.Button {
+func refreshBookmarksTab(appWindow fyne.Window, tabs *container.AppTabs) {
+	fmt.Println("Refreshing")
 
-	refreshButton := widget.NewButtonWithIcon("", theme.ViewRefreshIcon(), func() {
-		newBookmarksView := CreateBookmarksView(appWindow, tabs)
-		tabs.Items[2] = newBookmarksView
-		tabs.Refresh()
-	})
+	newBookmarksView := CreateBookmarksView(appWindow, tabs)
+	tabs.Items[2] = newBookmarksView
+	tabs.SelectIndex(2)
 
-	return refreshButton
+	tabs.Refresh()
 }
 
 func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
@@ -61,11 +59,7 @@ func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 	filterInput.PlaceHolder = "Filter"
 	filterInput.Resize(fyne.NewSize(800, filterInput.MinSize().Height)) // Set the desired width
 
-	refreshButton := refreshBookmarksViewButton(appWindow, tabs)
-	refreshButton.Resize(fyne.NewSize(40, filterInput.MinSize().Height))
-	refreshButton.Move(fyne.NewPos(805, 0))
-
-	topWidgets := container.NewWithoutLayout(filterInput, refreshButton)
+	topWidgets := container.NewWithoutLayout(filterInput)
 
 	bookmarksViewGrid := container.NewVBox()
 
@@ -75,7 +69,7 @@ func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 	}
 
 	if favoriteBooks != nil {
-		updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, "", appWindow)
+		updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, "", appWindow, tabs)
 	}
 
 	var typingTimer *time.Timer
@@ -87,7 +81,7 @@ func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 
 		typingTimer = time.AfterFunc(500*time.Millisecond, func() { // 500ms delay so filtering does not get laggy
 			if favoriteBooks != nil {
-				updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, filter, appWindow)
+				updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, filter, appWindow, tabs)
 			}
 		})
 	}

@@ -1,4 +1,4 @@
-package book
+package views
 
 import (
 	"AletheiaDesktop/search"
@@ -15,15 +15,19 @@ import (
 	"log"
 )
 
-func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container) *fyne.Container {
+func CreateBookBookmarksContainer(book search.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
-		"%s\n%s\nFiletype: %s\nFilesize: %s",
-		book.Title, book.Author, book.Extension, book.Size)
+		"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",
+		book.Title, book.Author, book.Extension, book.Size, book.Language, book.Pages, book.Publisher,
+	)
 
-	bookDetailsLabelContainer := container.NewVBox()
 	bookDetailsLabel := widget.NewLabelWithStyle(bookDetailsString, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
 	bookDetailsLabel.Wrapping = fyne.TextWrapWord
-	bookDetailsLabelContainer.Add(bookDetailsLabel)
+
+	unfavoriteButton := widget.NewButtonWithIcon("", theme.ContentRemoveIcon(), func() {
+		refreshBookmarksTab(appWindow, tabs)
+		database.UpdateDatabase(book, false, "favorited")
+	})
 
 	var downloadButton *widget.Button
 
@@ -43,36 +47,22 @@ func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container)
 		}()
 	})
 
-	moreInformationButton := widget.NewButtonWithIcon("", theme.InfoIcon(), func() {
-		DetailsContainer.Objects = nil
-		// new content for the selected book
-		newDetailsView := CreateBookDetailsView(book, false)
-		DetailsContainer.Add(newDetailsView)
+	buttonContainer := container.NewHBox(unfavoriteButton, downloadButton, layout.NewSpacer())
 
-		DetailsContainer.Refresh()
-	})
-
-	var favoriteButton *widget.Button
-	favoriteButton = widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
-		database.UpdateDatabase(book, true, "favorited")
-		favoriteButton.SetIcon(theme.ContentRemoveIcon())
-	})
-
-	buttonContainer := container.NewHBox(
-		moreInformationButton,
-		favoriteButton,
-		downloadButton,
-		layout.NewSpacer(),
-	)
-
-	// add some boxing
 	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
 	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}
 	border.StrokeWidth = 2
 	border.CornerRadius = 10
 
-	bookDetailsLabelContainer.Add(buttonContainer)
-	borderedContainer := container.NewStack(border, bookDetailsLabelContainer)
+	bookCover, ok := coverImageCache[book.ID]
+	if !ok {
+		bookCover = createBookDetailsTopView(book)
+		coverImageCache[book.ID] = bookCover
+	}
 
-	return borderedContainer
+	borderedContainer := container.NewStack(border, container.NewVBox(bookDetailsLabel, buttonContainer))
+	borderedContainerWithCover := container.NewHSplit(bookCover, borderedContainer)
+	borderedContainerWithCover.SetOffset(0.10)
+
+	return container.NewVBox(borderedContainerWithCover)
 }

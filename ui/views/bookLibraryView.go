@@ -1,4 +1,4 @@
-package book
+package views
 
 import (
 	"AletheiaDesktop/search"
@@ -20,7 +20,7 @@ import (
 // cache images after first run
 var coverImageCache = make(map[string]*fyne.Container)
 
-func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.Container {
+func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",
 		book.Title, book.Author, book.Extension, book.Size, book.Language, book.Pages, book.Publisher,
@@ -46,6 +46,7 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.C
 		confirmDialog := dialog.NewConfirm("Are you sure?", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {
 			if b {
 				shared.DeleteBook(book)
+				refreshLibraryTab(appWindow, tabs)
 			}
 		}, appWindow)
 		confirmDialog.Show()

@@ -1,4 +1,4 @@
-package book
+package views
 
 import (
 	"AletheiaDesktop/search"

@@ -2,7 +2,6 @@ package views
 
 import (
 	"AletheiaDesktop/search"
-	book2 "AletheiaDesktop/ui/book"
 	"AletheiaDesktop/util/database"
 	"AletheiaDesktop/util/shared"
 	"fmt"
@@ -33,7 +32,7 @@ func loadSavedBooks() (map[string]*search.Book, error) {
 	return nil, nil
 }
 
-func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window) {
+func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.Objects = nil
 
 	for _, book := range books {
@@ -44,7 +43,7 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 				database.UpdateDatabase(*book, false, "downloaded")
 			}
 			if bookFileExists {
-				bookLibraryContainer := book2.CreateBookLibraryContainer(*book, appWindow)
+				bookLibraryContainer := CreateBookLibraryContainer(*book, appWindow, tabs)
 				grid.Add(bookLibraryContainer)
 			}
 
@@ -53,15 +52,12 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 	grid.Refresh()
 }
 
-func refreshLibraryViewButton(appWindow fyne.Window, tabs *container.AppTabs) *widget.Button {
+func refreshLibraryTab(appWindow fyne.Window, tabs *container.AppTabs) {
 
-	refreshButton := widget.NewButtonWithIcon("", theme.ViewRefreshIcon(), func() {
-		newLibraryView := CreateLibraryView(appWindow, tabs)
-		tabs.Items[1] = newLibraryView
-		tabs.Refresh()
-	})
-
-	return refreshButton
+	newLibraryView := CreateLibraryView(appWindow, tabs)
+	tabs.Items[1] = newLibraryView
+	tabs.SelectIndex(1)
+	tabs.Refresh()
 }
 
 func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
@@ -69,11 +65,7 @@ func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *containe
 	filterInput.PlaceHolder = "Filter"
 	filterInput.Resize(fyne.NewSize(800, filterInput.MinSize().Height)) // Set the desired width
 
-	refreshButton := refreshLibraryViewButton(appWindow, tabs)
-	refreshButton.Resize(fyne.NewSize(40, filterInput.MinSize().Height))
-	refreshButton.Move(fyne.NewPos(805, 0))
-
-	topWidgets := container.NewWithoutLayout(filterInput, refreshButton)
+	topWidgets := container.NewWithoutLayout(filterInput)
 
 	libraryViewGrid := container.NewVBox()
 
@@ -83,7 +75,7 @@ func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *containe
 	}
 
 	if savedBooks != nil {
-		updateLibraryGrid(libraryViewGrid, savedBooks, "", appWindow)
+		updateLibraryGrid(libraryViewGrid, savedBooks, "", appWindow, tabs)
 	}
 
 	var typingTimer *time.Timer
@@ -95,7 +87,7 @@ func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *containe
 
 		typingTimer = time.AfterFunc(500*time.Millisecond, func() { // 500ms delay so filtering does not get laggy
 			if savedBooks != nil {
-				updateLibraryGrid(libraryViewGrid, savedBooks, filter, appWindow)
+				updateLibraryGrid(libraryViewGrid, savedBooks, filter, appWindow, tabs)
 			}
 		})
 	}

@@ -17,6 +17,7 @@ type Book struct {
 	Filename       string
 	Filepath       string
 	Downloaded     bool
+	DownloadFolder string // for tests
 }
 
 func (book *Book) ConstructFilename() string {

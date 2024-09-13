@@ -1,97 +1,100 @@
-package search_test
+package search
 
 import (
-	"AletheiaDesktop/search"
-	"bytes"
-	"github.com/onurhanak/libgenapi"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"github.com/onurhanak/libgenapi"
 )
 
 func TestConstructFilename(t *testing.T) {
-	book := search.Book{
+	book := &Book{
 		Book: libgenapi.Book{
-			Author:    "John Doe",
-			Title:     "Test Book",
+			Author:    "John/Smith",
+			Title:     "Go Programming: A Comprehensive Guide?",
 			Extension: "pdf",
 		},
 	}
 
-	expectedFilename := "John Doe - Test Book.pdf"
+	expectedFilename := "John_Smith - Go Programming_ A Comprehensive Guide_.pdf"
 	filename := book.ConstructFilename()
 
 	if filename != expectedFilename {
-		t.Errorf("Expected filename to be %s, got %s", expectedFilename, filename)
+		t.Errorf("Expected filename '%s', got '%s'", expectedFilename, filename)
 	}
 }
 
 func TestSaveToFile(t *testing.T) {
-	mockResponse := &http.Response{
-		Body: ioutil.NopCloser(bytes.NewReader([]byte("file content"))),
-	}
-
-	tmpFile, err := ioutil.TempFile("", "testbook")
+	tempDir, err := ioutil.TempDir("", "savefile")
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to create temp directory: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer os.RemoveAll(tempDir)
 
-	book := search.Book{
-		Filepath: tmpFile.Name(),
+	book := &Book{
+		Filepath: filepath.Join(tempDir, "testfile.txt"),
 	}
 
-	success := book.SaveToFile(mockResponse)
+	bodyContent := "Test content for SaveToFile method."
+	response := &http.Response{
+		Body: io.NopCloser(strings.NewReader(bodyContent)),
+	}
+
+	success := book.SaveToFile(response)
 	if !success {
-		t.Error("Expected SaveToFile to return true, but got false")
+		t.Error("Expected SaveToFile to return true, got false")
 	}
 
-	content, err := ioutil.ReadFile(tmpFile.Name())
+	data, err := ioutil.ReadFile(book.Filepath)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to read file '%s': %v", book.Filepath, err)
 	}
 
-	expectedContent := "file content"
-	if string(content) != expectedContent {
-		t.Errorf("Expected file content to be '%s', but got '%s'", expectedContent, string(content))
+	if string(data) != bodyContent {
+		t.Errorf("Expected file content '%s', got '%s'", bodyContent, string(data))
 	}
 }
 
 func TestDownload(t *testing.T) {
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("mock file content"))
+	serverContent := "Test content for Download method."
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(serverContent))
 	}))
-	defer mockServer.Close()
+	defer ts.Close()
 
-	tmpDir := os.TempDir()
-	defer os.RemoveAll(tmpDir)
+	tempDir, err := ioutil.TempDir("", "download")
+	if err != nil {
+		t.Fatalf("Failed to create temp directory: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
 
-	book := search.Book{
+	book := &Book{
 		Book: libgenapi.Book{
-			Author:       "John Doe",
-			Title:        "Test Book",
+			Author:       "Bob",
+			Title:        "Mastering Go",
 			Extension:    "pdf",
-			DownloadLink: mockServer.URL,
+			DownloadLink: ts.URL,
 		},
-		Filepath: filepath.Join(tmpDir, "John Doe - Test Book.pdf"),
+		DownloadFolder: tempDir,
 	}
 
 	success := book.Download()
 	if !success {
-		t.Error("Expected download to succeed, but it failed")
+		t.Error("Expected Download to return true, got false")
 	}
 
-	content, err := os.ReadFile(filepath.Join(tmpDir, "John Doe - Test Book.pdf"))
+	data, err := ioutil.ReadFile(book.Filepath)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to read file '%s': %v", book.Filepath, err)
 	}
 
-	expectedContent := "mock file content"
-	if string(content) != expectedContent {
-		t.Errorf("Expected file content to be '%s', but got '%s'", expectedContent, string(content))
+	if string(data) != serverContent {
+		t.Errorf("Expected file content '%s', got '%s'", serverContent, string(data))
 	}
 }

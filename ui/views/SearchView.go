@@ -2,6 +2,7 @@ package views
 
 import (
 	"AletheiaDesktop/search"
+	"AletheiaDesktop/util/shared"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
@@ -83,11 +84,15 @@ func executeSearch(searchInput *widget.Entry, searchType string, resultsContaine
 	resultsContainer.Objects = nil // clear previous results
 
 	go func() {
-		query := search.SearchLibgen(searchInput.Text, searchType, numberOfResults)
+		query, err := search.SearchLibgen(searchInput.Text, searchType, numberOfResults)
+		if err != nil {
+			shared.SendNotification("Failed", "Library Genesis is not responding.")
+		}
+
 		if query != nil {
 			resultsContainer.Add(constructBookContainers(query, defaultDetailsContainer))
+			resultsContainer.Refresh() // refresh to display new results
 		}
-		resultsContainer.Refresh() // refresh to display new results
 	}()
 }
 

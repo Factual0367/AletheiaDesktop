@@ -8,13 +8,14 @@ import (
 	"strings"
 )
 
-func SearchLibgen(searchQuery string, queryType string, numberOfResults int) *libgenapi.Query {
+func SearchLibgen(searchQuery string, queryType string, numberOfResults int) (*libgenapi.Query, error) {
 	query := libgenapi.NewQuery(strings.ToLower(queryType), searchQuery, numberOfResults)
 	err := query.Search()
 	if err != nil {
 		log.Println(fmt.Sprintf("Error : %s. Libgen API did not return any results.", err))
 		shared.SendNotification("Failed", "Library Genesis is not responding.")
 		query.Results = []libgenapi.Book{}
+		return query, err
 	}
 
 	// add coverlinks if does not exist
@@ -25,5 +26,5 @@ func SearchLibgen(searchQuery string, queryType string, numberOfResults int) *li
 		}
 	}
 
-	return query
+	return query, nil
 }

@@ -2,6 +2,7 @@ package views
 
 import (
 	"AletheiaDesktop/util/config"
+	"AletheiaDesktop/util/email"
 	"AletheiaDesktop/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
@@ -32,7 +33,14 @@ func createEmailContainer() *fyne.Container {
 	emailEntry := widget.NewEntry()
 	emailEntry.PlaceHolder = "Your email address"
 
-	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {})
+	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {
+		emailSaved := email.SaveEmail(emailEntry.Text)
+		if emailSaved {
+			shared.SendNotification("Success", "Your email has been saved.")
+		} else {
+			shared.SendNotification("Error", "Failed to save your email.")
+		}
+	})
 
 	entryContainer := container.NewVBox(
 		emailEntry,

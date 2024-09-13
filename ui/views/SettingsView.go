@@ -4,29 +4,56 @@ import (
 	"AletheiaDesktop/util/config"
 	"AletheiaDesktop/util/shared"
 	"fmt"
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
-func CreateSettingsView() *container.TabItem {
+func createDownloadLocationContainer() *fyne.Container {
 	downloadDir := config.GetCurrentDownloadFolder()
 	currentLibraryLocationMsg := "Current Library Location: "
-	currentDownloadDirMsg := fmt.Sprintf("%s \n%s", currentLibraryLocationMsg, downloadDir)
-	downloadDirLabel := widget.NewLabel(currentDownloadDirMsg)
+	currentDownloadDirLabel := widget.NewLabel(currentLibraryLocationMsg)
+	downloadDirLabel := widget.NewLabel(downloadDir)
 
-	changeDownloadLocation := widget.NewButtonWithIcon("Change Library Location", theme.FolderIcon(), func() {
+	changeDownloadLocationButton := widget.NewButtonWithIcon("Change Library Location", theme.FolderIcon(), func() {
 		newDownloadDir := shared.GetFolder()
 		config.UpdateDownloadPath(newDownloadDir)
 		downloadDirLabel.SetText(fmt.Sprintf("%s \n%s", currentLibraryLocationMsg, newDownloadDir))
 	})
 
+	downloadLocationContainer := container.NewVBox(currentDownloadDirLabel, downloadDirLabel, changeDownloadLocationButton)
+	return downloadLocationContainer
+}
+
+func createEmailContainer() *fyne.Container {
+	emailLabel := widget.NewLabel("Email")
+
+	emailEntry := widget.NewEntry()
+	emailEntry.PlaceHolder = "Your email address"
+
+	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {})
+
+	entryContainer := container.NewVBox(
+		emailEntry,
+		saveEmailButton,
+	)
+
+	emailContainer := container.NewVBox(emailLabel, entryContainer)
+	return emailContainer
+}
+
+func CreateSettingsView() *container.TabItem {
+
+	downloadLocationContainer := createDownloadLocationContainer()
+	emailContainer := createEmailContainer()
+
 	padding := widget.NewLabel("")
 
-	settingsInnerContent := container.NewGridWithRows(4, padding, downloadDirLabel, changeDownloadLocation)
+	settingsInnerContent := container.NewGridWithRows(4, padding, downloadLocationContainer)
 	settingsContent := container.NewVBox(
-		padding,
 		container.NewGridWithColumns(3, padding, settingsInnerContent, padding),
+		container.NewGridWithColumns(3, padding, emailContainer, padding),
 	)
 	settingsContentBordered := container.NewBorder(nil, nil, nil, nil, settingsContent)
 

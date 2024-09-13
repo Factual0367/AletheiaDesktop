@@ -10,6 +10,7 @@ func InitializeDatabase() {
 		"savedBooks":    map[string]*search.Book{},
 		"favoriteBooks": map[string]*search.Book{},
 		"userEmail":     "",
+		"userPassword":  "",
 	}
 
 	fileWriteErr := WriteDatabaseToFile(initialEmptyDatabase)

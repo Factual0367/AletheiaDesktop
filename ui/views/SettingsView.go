@@ -33,10 +33,12 @@ func createEmailContainer() *fyne.Container {
 	emailEntry := widget.NewEntry()
 	userEmail := email.GetUserEmail()
 	emailEntry.PlaceHolder = userEmail
+	userPassword := widget.NewPasswordEntry()
 
 	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {
 		emailSaved := email.SaveEmail(emailEntry.Text)
-		if emailSaved {
+		passwordSaved := email.SavePassword(userPassword.Text)
+		if emailSaved && passwordSaved {
 			shared.SendNotification("Success", "Your email has been saved.")
 		} else {
 			shared.SendNotification("Error", "Failed to save your email.")
@@ -45,6 +47,7 @@ func createEmailContainer() *fyne.Container {
 
 	entryContainer := container.NewVBox(
 		emailEntry,
+		userPassword,
 		saveEmailButton,
 	)
 

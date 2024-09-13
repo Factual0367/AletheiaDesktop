@@ -49,6 +49,7 @@ require (
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/tadvi/systray v0.0.0-20190226123456-11a2b8fa57af // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
+	github.com/wneessen/go-mail v0.4.4 // indirect
 	github.com/yuin/goldmark v1.7.4 // indirect
 	golang.org/x/image v0.20.0 // indirect
 	golang.org/x/mobile v0.0.0-20240909163608-642950227fb3 // indirect

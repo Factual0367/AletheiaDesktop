@@ -3,6 +3,7 @@ package book
 import (
 	"AletheiaDesktop/search"
 	"AletheiaDesktop/ui/modals"
+	"AletheiaDesktop/util/email"
 	"AletheiaDesktop/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
@@ -54,7 +55,14 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.C
 		shared.OpenLibraryFolder()
 	})
 
-	emailBookButton := widget.NewButtonWithIcon("", theme.MailSendIcon(), func() {})
+	emailBookButton := widget.NewButtonWithIcon("", theme.MailSendIcon(), func() {
+		emailSent := email.SendBookEmail(book)
+		if emailSent {
+			shared.SendNotification("Success", "Your book is emailed successfully.")
+		} else {
+			shared.SendNotification("Failed", "Your book could not be emailed.")
+		}
+	})
 
 	buttonContainer := container.NewHBox(openButton, openLibraryFolderButton, emailBookButton, convertButton, deleteButton, layout.NewSpacer())
 

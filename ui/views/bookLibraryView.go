@@ -2,7 +2,6 @@ package views
 
 import (
 	"AletheiaDesktop/search"
-	"AletheiaDesktop/ui/modals"
 	"AletheiaDesktop/util/email"
 	"AletheiaDesktop/util/shared"
 	"fmt"
@@ -39,14 +38,14 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *c
 	})
 
 	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {
-		modals.ShowConversionPopup(appWindow, book)
+		ShowConversionPopup(appWindow, book, tabs)
 	})
 
 	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
 		confirmDialog := dialog.NewConfirm("Are you sure?", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {
 			if b {
 				shared.DeleteBook(book)
-				refreshLibraryTab(appWindow, tabs)
+				RefreshLibraryTab(appWindow, tabs)
 			}
 		}, appWindow)
 		confirmDialog.Show()

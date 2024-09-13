@@ -62,7 +62,7 @@ func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 	topWidgets := container.NewWithoutLayout(filterInput)
 
 	bookmarksViewGrid := container.NewVBox()
-
+	bookmarksViewGridScrollable := container.NewVScroll(bookmarksViewGrid)
 	favoriteBooks, err := loadFavoriteBooks()
 	if err != nil {
 		log.Printf("Could not read savedBooks %s", err)
@@ -86,7 +86,7 @@ func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 		})
 	}
 
-	bookmarksViewLayout := container.NewBorder(topWidgets, nil, nil, nil, bookmarksViewGrid)
+	bookmarksViewLayout := container.NewBorder(topWidgets, nil, nil, nil, bookmarksViewGridScrollable)
 
 	return container.NewTabItemWithIcon("Bookmarks", theme.ContentAddIcon(), bookmarksViewLayout)
 }

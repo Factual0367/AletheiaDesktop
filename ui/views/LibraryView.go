@@ -68,6 +68,7 @@ func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *containe
 	topWidgets := container.NewWithoutLayout(filterInput)
 
 	libraryViewGrid := container.NewVBox()
+	libraryViewGridScrollable := container.NewVScroll(libraryViewGrid)
 
 	savedBooks, err := loadSavedBooks()
 	if err != nil {
@@ -92,7 +93,7 @@ func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *containe
 		})
 	}
 
-	libraryViewLayout := container.NewBorder(topWidgets, nil, nil, nil, libraryViewGrid)
+	libraryViewLayout := container.NewBorder(topWidgets, nil, nil, nil, libraryViewGridScrollable)
 
 	return container.NewTabItemWithIcon("Library", theme.StorageIcon(), libraryViewLayout)
 }

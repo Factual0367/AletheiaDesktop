@@ -54,7 +54,9 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window) *fyne.C
 		shared.OpenLibraryFolder()
 	})
 
-	buttonContainer := container.NewHBox(openButton, openLibraryFolderButton, convertButton, deleteButton, layout.NewSpacer())
+	emailBookButton := widget.NewButtonWithIcon("", theme.MailSendIcon(), func() {})
+
+	buttonContainer := container.NewHBox(openButton, openLibraryFolderButton, emailBookButton, convertButton, deleteButton, layout.NewSpacer())
 
 	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
 	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}

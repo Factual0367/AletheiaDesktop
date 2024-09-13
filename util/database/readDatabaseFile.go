@@ -35,9 +35,6 @@ func ReadDatabaseFile() (map[string]interface{}, error) {
 			return nil, fmt.Errorf("Unmarshal config file error: %v", unmarshalErr)
 		}
 
-		userEmail := userData["email"]
-		fmt.Println(userEmail)
-
 		unmarshalBooks := func(key string) error {
 			if booksRaw, ok := userData[key]; ok {
 				books := make(map[string]*search.Book)

@@ -31,7 +31,8 @@ func createEmailContainer() *fyne.Container {
 	emailLabel := widget.NewLabel("Email")
 
 	emailEntry := widget.NewEntry()
-	emailEntry.PlaceHolder = "Your email address"
+	userEmail := email.GetUserEmail()
+	emailEntry.PlaceHolder = userEmail
 
 	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {
 		emailSaved := email.SaveEmail(emailEntry.Text)

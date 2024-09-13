@@ -16,6 +16,8 @@ func InitializeConfig() {
 
 	initialUserConfig := map[string]string{
 		"downloadLocation": initialDownloadDir,
+		"userEmail":        "",
+		"userPassword":     "",
 	}
 
 	fileWriteErr := WriteConfigFile(initialUserConfig)

@@ -1,17 +1,18 @@
 package email
 
 import (
-	"AletheiaDesktop/util/database"
+	"AletheiaDesktop/util/config"
 	"fmt"
 	"log"
 )
 
 func GetUserEmail() string {
-	existingDatabaseContent, databaseReadErr := database.ReadDatabaseFile()
-	if databaseReadErr != nil {
-		log.Println(databaseReadErr.Error())
+	existingUserConfig, configErr := config.ReadConfigFile()
+
+	if configErr != nil {
+		log.Println(fmt.Sprintf("Error reading config file: %s", configErr))
 	}
-	userEmail := existingDatabaseContent["userEmail"]
+	userEmail := existingUserConfig["userEmail"]
 	if userEmail == "" {
 		return "Your email address"
 	}

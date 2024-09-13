@@ -6,7 +6,7 @@
 <h1 align="center">Aletheia</h1>
 
 <sub>
-<p align='center'><img  src="assets/screenshot1.png" height="500" width="auto"></p>
+<p align='center'><img  src="assets/screenshot.png" height="500" width="800"></p>
 </sub>
 
 Aletheia is a desktop application for Library Genesis. It supports downloading books, converting them to different 
@@ -49,8 +49,9 @@ You can find the binaries in fyne-cross/bin folder.
 
 ### Converting Books
 
-For this feature to work you need to install Calibre. On most Linux distributions it is shipped in the core repos. On
-Windows, visit [Calibre Downloads](https://calibre-ebook.com/download) to install it.
+For this feature to work you need to install Calibre. On most Linux distributions it is shipped in the core repos. 
+
+On Windows, visit [Calibre Downloads](https://calibre-ebook.com/download) to install it.
 
 ### Emailing Books
 

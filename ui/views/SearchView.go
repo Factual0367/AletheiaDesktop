@@ -80,8 +80,7 @@ func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, se
 }
 
 func executeSearch(searchInput *widget.Entry, searchType string, resultsContainer *fyne.Container, defaultDetailsContainer *fyne.Container) {
-	resultsContainer.Objects = nil            // clear previous results
-	resultsContainer.Add(widget.NewLabel("")) // padding
+	resultsContainer.Objects = nil // clear previous results
 
 	go func() {
 		query := search.SearchLibgen(searchInput.Text, searchType, numberOfResults)

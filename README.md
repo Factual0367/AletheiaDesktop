@@ -1,7 +1,7 @@
 
 
 <sub>
-<p align='center'><img  src="Icon.png" height="100" width="auto"></p>
+<p align='center'><img  src="Icon.png" height="200" width="auto"></p>
 </sub>
 <h1 align="center">Aletheia</h1>
 

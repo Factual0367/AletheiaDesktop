@@ -20,14 +20,14 @@ func ReadConfigFile() (map[string]string, error) {
 	userConfigContent := map[string]string{}
 	file, readFileErr := os.ReadFile(configPath)
 	if readFileErr != nil {
-		shared.SendNotification("Error", "Cannot read your config file. Please delete aletheia.cfg and start over.")
+		shared.SendNotification("Error", "Aletheia cannot read your config file. Please delete aletheia.cfg and start over.")
 		log.Println(fmt.Errorf("Read config file error: %v", readFileErr))
 		return nil, readFileErr
 	}
 
 	unmarshalErr := json.Unmarshal(file, &userConfigContent)
 	if unmarshalErr != nil {
-		shared.SendNotification("Error", "Cannot read your config file. Please delete aletheia.cfg and start over.")
+		shared.SendNotification("Error", "Aletheia cannot read your config file. Please delete aletheia.cfg and start over.")
 		log.Println(fmt.Errorf("Unmarshal config file error: %v", unmarshalErr))
 		return nil, unmarshalErr
 	}

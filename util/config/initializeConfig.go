@@ -1,6 +1,7 @@
 package config
 
 import (
+	"AletheiaDesktop/util/shared"
 	"log"
 	"os"
 )
@@ -23,7 +24,8 @@ func InitializeConfig() {
 	fileWriteErr := WriteConfigFile(initialUserConfig)
 
 	if fileWriteErr != nil {
-		log.Fatalln("Unable to write config file")
+		log.Println("Unable to write config file")
+		shared.SendNotification("Error", "Aletheia cannot create a configuration file.")
 		panic(fileWriteErr)
 	}
 }

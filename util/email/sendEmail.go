@@ -9,10 +9,12 @@ import (
 func composeSendMessage(userEmail string, userPassword string, book search.Book) bool {
 	m := mail.NewMsg()
 	if err := m.From(userEmail); err != nil {
-		log.Fatalf("failed to set From address: %s", err)
+		log.Println("failed to set From address: %s", err)
+		return false
 	}
 	if err := m.To(userEmail); err != nil {
-		log.Fatalf("failed to set To address: %s", err)
+		log.Println("failed to set To address: %s", err)
+		return false
 	}
 	m.Subject(book.Title)
 	m.SetBodyString(mail.TypeTextPlain, "")

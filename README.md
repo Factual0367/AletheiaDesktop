@@ -21,6 +21,8 @@ Download the latest binary package from [releases](https://github.com/onurhanak/
 
 #### Steps
 
+**If you are compiling for Windows, you need to have [Docker](https://docker.com) installed.**
+
 1. Clone the repository:
     ```sh
     git clone https://github.com/onurhanak/AletheiaDesktop.git

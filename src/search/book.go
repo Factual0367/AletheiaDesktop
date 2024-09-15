@@ -50,7 +50,6 @@ func (book *Book) ConstructFilepath() string {
 func (book *Book) ConstructCoverPath() string {
 	aletheiaCachePath := cache.GetAletheiaCache()
 	book.CoverPath = filepath.Join(aletheiaCachePath, book.ID)
-	fmt.Println(book.CoverPath)
 	return book.CoverPath
 }
 

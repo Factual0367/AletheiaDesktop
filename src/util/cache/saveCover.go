@@ -17,18 +17,16 @@ func getCoverImage(coverLink string) http.Response {
 }
 
 func SaveCoverImage(bookID string, bookCoverLink string, bookCoverPath string) {
-	if bookID != "Default" {
-		resp := getCoverImage(bookCoverLink)
-		coverImageFile, err := os.Create(bookCoverPath)
-		if err != nil {
-			panic(err)
-		}
-		defer coverImageFile.Close()
+	resp := getCoverImage(bookCoverLink)
+	coverImageFile, err := os.Create(bookCoverPath)
+	if err != nil {
+		panic(err)
+	}
+	defer coverImageFile.Close()
 
-		_, err = io.Copy(coverImageFile, resp.Body)
-		if err != nil {
-			log.Println(fmt.Sprintf("Failed to save cover image: %s", err))
-		}
+	_, err = io.Copy(coverImageFile, resp.Body)
+	if err != nil {
+		log.Println(fmt.Sprintf("Failed to save cover image: %s", err))
 	}
 
 }

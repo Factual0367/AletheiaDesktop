@@ -2,6 +2,7 @@ package views
 
 import (
 	search2 "AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/util/cache"
 	"AletheiaDesktop/src/util/shared"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -10,6 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/onurhanak/libgenapi"
 	"log"
+	"path"
 	"strconv"
 )
 
@@ -46,6 +48,7 @@ func createDefaultDetailsView() *fyne.Container {
 		Filename:   "",
 		Filepath:   "",
 		Downloaded: false,
+		CoverPath:  path.Join(cache.GetAletheiaCache(), "Default"),
 	}
 	defaultDetailsView := CreateBookDetailsView(defaultBook, true)
 	defaultDetailsViewContainer := container.NewVBox(defaultDetailsView)

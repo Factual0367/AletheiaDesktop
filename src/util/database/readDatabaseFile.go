@@ -5,6 +5,7 @@ import (
 	"AletheiaDesktop/src/util/shared"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -43,7 +44,7 @@ func ReadDatabaseFile() (map[string]interface{}, error) {
 					return fmt.Errorf("Error marshaling %s: %v", key, marshalErr)
 				}
 
-				unmarshalErr := json.Unmarshal(booksBytes, &books)
+				unmarshalErr = json.Unmarshal(booksBytes, &books)
 				if unmarshalErr != nil {
 					return fmt.Errorf("Unmarshal %s error: %v", key, unmarshalErr)
 				}
@@ -53,11 +54,13 @@ func ReadDatabaseFile() (map[string]interface{}, error) {
 			return nil
 		}
 
-		if err := unmarshalBooks("savedBooks"); err != nil {
-			return nil, err
+		if err = unmarshalBooks("savedBooks"); err != nil {
+			log.Println(fmt.Sprintf("Error unmarshaling saved books: %v", err))
+			return map[string]interface{}{}, err
 		}
-		if err := unmarshalBooks("favoriteBooks"); err != nil {
-			return nil, err
+		if err = unmarshalBooks("favoriteBooks"); err != nil {
+			log.Println(fmt.Sprintf("Error unmarshaling favorite books: %v", err))
+			return map[string]interface{}{}, err
 		}
 
 		return userData, nil

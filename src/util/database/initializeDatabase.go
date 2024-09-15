@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func InitializeDatabase() {
+func InitializeDatabase() map[string]interface{} {
 	initialEmptyDatabase := map[string]interface{}{
 		"savedBooks":    map[string]*search.Book{},
 		"favoriteBooks": map[string]*search.Book{},
@@ -17,4 +17,5 @@ func InitializeDatabase() {
 		log.Fatalln("Unable to write to database file")
 		panic(fileWriteErr)
 	}
+	return initialEmptyDatabase
 }

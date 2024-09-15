@@ -31,7 +31,6 @@ func createBookDetailsTopView(book search.Book) *fyne.Container {
 		cache.SaveCoverImage(book.ID, book.CoverLink, book.CoverPath)
 	}
 	if cachedImageExists {
-		fmt.Println("Reading cover image from cache")
 		bookCover = canvas.NewImageFromFile(book.CoverPath)
 	} else {
 		bookCover = canvas.NewImageFromURI(uri)
@@ -40,7 +39,6 @@ func createBookDetailsTopView(book search.Book) *fyne.Container {
 
 	bookCover.FillMode = canvas.ImageFillContain
 	bookCover.SetMinSize(coverImageSize)
-
 	topView := container.NewPadded(container.NewCenter(bookCover))
 
 	return topView

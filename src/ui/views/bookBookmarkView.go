@@ -54,11 +54,7 @@ func CreateBookBookmarksContainer(book search.Book, appWindow fyne.Window, tabs 
 	border.StrokeWidth = 2
 	border.CornerRadius = 10
 
-	bookCover, ok := coverImageCache[book.ID]
-	if !ok {
-		bookCover = createBookDetailsTopView(book)
-		coverImageCache[book.ID] = bookCover
-	}
+	bookCover := createBookDetailsTopView(book)
 
 	borderedContainer := container.NewStack(border, container.NewVBox(bookDetailsLabel, buttonContainer))
 	borderedContainerWithCover := container.NewHSplit(bookCover, borderedContainer)

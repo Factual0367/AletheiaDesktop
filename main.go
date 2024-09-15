@@ -2,6 +2,7 @@ package main
 
 import (
 	"AletheiaDesktop/ui/views"
+	"AletheiaDesktop/util/cache"
 	"AletheiaDesktop/util/config"
 	"AletheiaDesktop/util/database"
 	"AletheiaDesktop/util/shared"
@@ -25,6 +26,7 @@ func main() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Aletheia")
 	checkFirstRun()
+	cache.CreateCacheDir()
 
 	tabs := container.NewAppTabs()
 

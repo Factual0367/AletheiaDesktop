@@ -2,6 +2,7 @@ package views
 
 import (
 	"AletheiaDesktop/search"
+	"AletheiaDesktop/util/cache"
 	"AletheiaDesktop/util/database"
 	"AletheiaDesktop/util/shared"
 	"fmt"
@@ -25,7 +26,18 @@ func createBookDetailsTopView(book search.Book) *fyne.Container {
 		uri, _ = storage.ParseURI("https://cdn.pixabay.com/photo/2013/07/13/13/34/book-161117_960_720.png")
 	}
 
-	bookCover = canvas.NewImageFromURI(uri)
+	cachedImageExists, err := shared.Exists(book.CoverPath)
+	if err != nil {
+		cache.SaveCoverImage(book.ID, book.CoverLink, book.CoverPath)
+	}
+	if cachedImageExists {
+		fmt.Println("Reading cover image from cache")
+		bookCover = canvas.NewImageFromFile(book.CoverPath)
+	} else {
+		bookCover = canvas.NewImageFromURI(uri)
+
+	}
+
 	bookCover.FillMode = canvas.ImageFillContain
 	bookCover.SetMinSize(coverImageSize)
 

@@ -28,6 +28,7 @@ func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Cont
 		}
 		convertedBook.ConstructFilename()
 		convertedBook.ConstructFilepath()
+		convertedBook.ConstructCoverPath()
 		bookItem := CreateBookListContainer(convertedBook, detailsContainer)
 		bookGrid.Add(bookItem)
 	}
@@ -38,6 +39,7 @@ func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Cont
 func createDefaultDetailsView() *fyne.Container {
 	defaultBook := search.Book{
 		Book: libgenapi.Book{
+			ID:        "Default",
 			Title:     "Select a book to view details.",
 			CoverLink: "https://cdn.pixabay.com/photo/2013/07/13/13/34/book-161117_960_720.png",
 		},

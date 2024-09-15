@@ -1,6 +1,7 @@
 package search
 
 import (
+	"AletheiaDesktop/util/cache"
 	"AletheiaDesktop/util/config"
 	"fmt"
 	"github.com/onurhanak/libgenapi"
@@ -16,6 +17,7 @@ type Book struct {
 	libgenapi.Book // extend libgenapi.Book
 	Filename       string
 	Filepath       string
+	CoverPath      string
 	Downloaded     bool
 	DownloadFolder string // for tests
 }
@@ -43,6 +45,13 @@ func (book *Book) ConstructFilepath() string {
 	filepath := filepath.Join(downloadPath, book.ConstructFilename())
 	book.Filepath = filepath
 	return filepath
+}
+
+func (book *Book) ConstructCoverPath() string {
+	aletheiaCachePath := cache.GetAletheiaCache()
+	book.CoverPath = filepath.Join(aletheiaCachePath, book.ID)
+	fmt.Println(book.CoverPath)
+	return book.CoverPath
 }
 
 func (book *Book) SaveToFile(response *http.Response) bool {

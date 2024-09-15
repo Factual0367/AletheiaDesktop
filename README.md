@@ -31,7 +31,7 @@ Download the latest binary package from [releases](https://github.com/onurhanak/
 
 2. Install dependencies:
     ```sh
-    go mod tidy
+    go mod download
     ```
 
 3. Build the application:

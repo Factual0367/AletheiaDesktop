@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func InitializeConfig() {
+func InitializeConfig() map[string]string {
 	// add checks
 	initialDownloadDir, err := os.UserHomeDir()
 
@@ -26,4 +26,6 @@ func InitializeConfig() {
 		log.Println("Unable to write config file")
 		panic(fileWriteErr)
 	}
+
+	return initialUserConfig
 }

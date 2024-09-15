@@ -1,13 +1,15 @@
 package config
 
-import "log"
+import (
+	"log"
+)
 
 func GetCurrentDownloadFolder() string {
 
 	userConfigContent, configReadErr := ReadConfigFile()
 
 	if configReadErr != nil {
-		log.Fatalln("Could not read config file:", configReadErr)
+		log.Println("Created a new configuration file because config file is corrupted:", configReadErr)
 	}
 
 	currentDownloadFolder := userConfigContent["downloadLocation"]

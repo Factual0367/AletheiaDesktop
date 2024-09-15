@@ -24,8 +24,9 @@ func ReadConfigFile() (map[string]string, error) {
 
 	unmarshalErr := json.Unmarshal(file, &userConfigContent)
 	if unmarshalErr != nil {
-		log.Fatalln(fmt.Errorf("Unmarshal config file error: %v", unmarshalErr))
-		return nil, unmarshalErr
+		log.Println(fmt.Sprintf("Creating a new config file. Unmarshal config file error: %v", unmarshalErr))
+		userConfigContent = InitializeConfig()
+		return userConfigContent, unmarshalErr
 	}
 	return userConfigContent, nil
 }

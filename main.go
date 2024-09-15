@@ -1,12 +1,11 @@
 package main
 
 import (
-	"AletheiaDesktop/ui/views"
-	"AletheiaDesktop/util/cache"
-	"AletheiaDesktop/util/config"
-	"AletheiaDesktop/util/database"
-	"AletheiaDesktop/util/shared"
-
+	views2 "AletheiaDesktop/src/ui/views"
+	"AletheiaDesktop/src/util/cache"
+	config2 "AletheiaDesktop/src/util/config"
+	"AletheiaDesktop/src/util/database"
+	"AletheiaDesktop/src/util/shared"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -14,10 +13,10 @@ import (
 )
 
 func checkFirstRun() {
-	defaultConfigPath, _ := config.ConstructConfigLocation()
+	defaultConfigPath, _ := config2.ConstructConfigLocation()
 	exists, err := shared.Exists(defaultConfigPath)
 	if !exists || err != nil {
-		config.InitializeConfig()
+		config2.InitializeConfig()
 		database.InitializeDatabase()
 	}
 }
@@ -30,10 +29,10 @@ func main() {
 
 	tabs := container.NewAppTabs()
 
-	searchView := views.CreateSearchView()
-	settingsView := views.CreateSettingsView()
-	libraryView := views.CreateLibraryView(myWindow, tabs)
-	bookmarksView := views.CreateBookmarksView(myWindow, tabs)
+	searchView := views2.CreateSearchView()
+	settingsView := views2.CreateSettingsView()
+	libraryView := views2.CreateLibraryView(myWindow, tabs)
+	bookmarksView := views2.CreateBookmarksView(myWindow, tabs)
 
 	tabs = container.NewAppTabs(
 		searchView,
@@ -46,11 +45,11 @@ func main() {
 	// when the user downloads a book
 	tabs.OnSelected = func(tab *container.TabItem) {
 		if tab.Icon == theme.StorageIcon() {
-			libraryView = views.CreateLibraryView(myWindow, tabs)
+			libraryView = views2.CreateLibraryView(myWindow, tabs)
 			tabs.Items[1] = libraryView
 			tabs.Refresh()
 		} else if tab.Icon == theme.ContentAddIcon() {
-			bookmarksView = views.CreateBookmarksView(myWindow, tabs)
+			bookmarksView = views2.CreateBookmarksView(myWindow, tabs)
 			tabs.Items[2] = bookmarksView
 			tabs.Refresh()
 		}

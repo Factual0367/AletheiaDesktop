@@ -4,7 +4,7 @@ import (
 	"AletheiaDesktop/src/search"
 	"AletheiaDesktop/src/util/cache"
 	"AletheiaDesktop/src/util/database"
-	shared2 "AletheiaDesktop/src/util/shared"
+	"AletheiaDesktop/src/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -26,9 +26,9 @@ func createBookDetailsTopView(book search.Book) *fyne.Container {
 		uri, _ = storage.ParseURI("https://cdn.pixabay.com/photo/2013/07/13/13/34/book-161117_960_720.png")
 	}
 
-	cachedImageExists, err := shared2.Exists(book.CoverPath)
+	cachedImageExists, err := shared.Exists(book.CoverPath)
 	if err != nil {
-		cache.SaveCoverImage(book.ID, book.CoverLink, book.CoverPath)
+		cache.SaveCoverImage(book.CoverLink, book.CoverPath)
 	}
 	if cachedImageExists {
 		bookCover = canvas.NewImageFromFile(book.CoverPath)
@@ -49,14 +49,14 @@ func createDownloadButton(book search.Book) *widget.Button {
 
 	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {
 		go func() {
-			shared2.SendNotification(book.Title, "Downloading")
+			shared.SendNotification(book.Title, "Downloading")
 			success := book.Download()
 			if success {
-				shared2.SendNotification(book.Title, "Downloaded successfully")
+				shared.SendNotification(book.Title, "Downloaded successfully")
 				downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
 				database.UpdateDatabase(book, true, "downloaded") // true to add, false to remove from database
 			} else {
-				shared2.SendNotification(book.Title, "Download failed")
+				shared.SendNotification(book.Title, "Download failed")
 				log.Println(fmt.Sprintf("Download failed: %s"))
 				downloadButton.SetIcon(theme.ErrorIcon())
 			}

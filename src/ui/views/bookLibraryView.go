@@ -16,8 +16,6 @@ import (
 	"log"
 )
 
-// cache images after first run
-
 func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",

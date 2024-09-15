@@ -16,7 +16,7 @@ func getCoverImage(coverLink string) http.Response {
 	return *resp
 }
 
-func SaveCoverImage(bookID string, bookCoverLink string, bookCoverPath string) {
+func SaveCoverImage(bookCoverLink string, bookCoverPath string) {
 	resp := getCoverImage(bookCoverLink)
 	coverImageFile, err := os.Create(bookCoverPath)
 	if err != nil {

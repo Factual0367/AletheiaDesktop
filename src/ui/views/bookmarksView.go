@@ -3,7 +3,6 @@ package views
 import (
 	"AletheiaDesktop/src/search"
 	"AletheiaDesktop/src/util/database"
-	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -17,7 +16,6 @@ func loadFavoriteBooks() (map[string]*search.Book, error) {
 	userData, err := database.ReadDatabaseFile()
 
 	if len(userData) == 0 {
-		fmt.Println(len(userData))
 		userData, err = database.ReadDatabaseFile()
 	}
 
@@ -45,8 +43,6 @@ func updateBookmarksGrid(grid *fyne.Container, books map[string]*search.Book, fi
 }
 
 func refreshBookmarksTab(appWindow fyne.Window, tabs *container.AppTabs) {
-	fmt.Println("Refreshing")
-
 	newBookmarksView := CreateBookmarksView(appWindow, tabs)
 	tabs.Items[2] = newBookmarksView
 	tabs.SelectIndex(2)

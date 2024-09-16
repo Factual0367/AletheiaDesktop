@@ -33,7 +33,7 @@ func main() {
 	settingsView := views.CreateSettingsView()
 	libraryView := views.CreateLibraryView(myWindow, tabs)
 	bookmarksView := views.CreateBookmarksView(myWindow, tabs)
-	downloadsView := views.CreateDownloadsView(myWindow, tabs)
+	downloadsView := views.CreateDownloadsView()
 
 	tabs = container.NewAppTabs(
 		searchView,
@@ -55,10 +55,10 @@ func main() {
 			tabs.Items[2] = bookmarksView
 			tabs.Refresh()
 		} else if tab.Icon == theme.DownloadIcon() {
-			downloadsView = views.CreateDownloadsView(myWindow, tabs)
+			downloadsView = views.CreateDownloadsView()
 			tabs.Items[3] = downloadsView
 			tabs.Refresh()
-			views.StartDownloadsAutoRefresh(myWindow, tabs)
+			views.StartDownloadsAutoRefresh(tabs)
 		}
 	}
 

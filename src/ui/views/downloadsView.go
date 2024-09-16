@@ -2,7 +2,6 @@ package views
 
 import (
 	"AletheiaDesktop/src/util/downloads"
-	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"time"
@@ -10,9 +9,9 @@ import (
 
 var downloadRefreshTicker *time.Ticker
 
-func RefreshDownloadsTab(appWindow fyne.Window, tabs *container.AppTabs) {
+func RefreshDownloadsTab(tabs *container.AppTabs) {
 	if tabs.Selected().Text == "Downloads" {
-		newDownloadsView := CreateDownloadsView(appWindow, tabs)
+		newDownloadsView := CreateDownloadsView()
 		tabs.Items[3] = newDownloadsView
 		tabs.SelectIndex(3)
 		tabs.Refresh()
@@ -26,7 +25,7 @@ func StopDownloadsAutoRefresh() {
 	}
 }
 
-func CreateDownloadsView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
+func CreateDownloadsView() *container.TabItem {
 	downloadsViewContainer := container.NewVBox()
 	shouldStopRefreshing := true
 
@@ -45,15 +44,14 @@ func CreateDownloadsView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 	return container.NewTabItemWithIcon("Downloads", theme.DownloadIcon(), downloadsViewContainer)
 }
 
-func StartDownloadsAutoRefresh(appWindow fyne.Window, tabs *container.AppTabs) {
+func StartDownloadsAutoRefresh(tabs *container.AppTabs) {
 	if downloadRefreshTicker != nil {
 		downloadRefreshTicker.Stop()
 	}
-
 	downloadRefreshTicker = time.NewTicker(2 * time.Second)
 	go func() {
 		for range downloadRefreshTicker.C {
-			RefreshDownloadsTab(appWindow, tabs)
+			RefreshDownloadsTab(tabs)
 		}
 	}()
 }

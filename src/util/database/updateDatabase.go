@@ -11,7 +11,7 @@ func UpdateDatabase(Book search.Book, add bool, saveType string) {
 	if databaseReadErr != nil {
 		log.Fatalln(databaseReadErr.Error())
 	}
-	fmt.Println("Updating database")
+	log.Println(fmt.Sprintf("Updating database"))
 	if saveType == "downloaded" {
 		if add {
 			existingDatabaseContent = addBook(&Book, existingDatabaseContent)

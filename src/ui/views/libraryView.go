@@ -5,7 +5,6 @@ import (
 	"AletheiaDesktop/src/util/conversion"
 	"AletheiaDesktop/src/util/database"
 	"AletheiaDesktop/src/util/shared"
-	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -20,9 +19,8 @@ func conversionPopup(appWindow fyne.Window, book search.Book, modal *widget.PopU
 	var targetFormat string
 	conversionContainer := container.NewVBox()
 	conversionLabel := widget.NewLabel("Which format do you want to convert to?")
-	conversionSelector := widget.NewSelect([]string{"EPUB", "PDF", "MOBI", "DJVU"}, func(s string) {
+	conversionSelector := widget.NewSelect([]string{"EPUB", "PDF", "MOBI"}, func(s string) {
 		targetFormat = s
-		fmt.Println(s)
 	})
 
 	convertButton := widget.NewButtonWithIcon("Convert", theme.ContentRedoIcon(), func() {
@@ -71,7 +69,6 @@ func ShowConversionPopup(appWindow fyne.Window, book search.Book, tabs *containe
 	var modal *widget.PopUp
 
 	calibreExists := conversion.CheckCalibreInstalled()
-	fmt.Println(calibreExists)
 
 	if calibreExists {
 		modal = conversionPopup(appWindow, book, modal, tabs)
@@ -88,7 +85,6 @@ func loadSavedBooks() (map[string]*search.Book, error) {
 	userData, err := database.ReadDatabaseFile()
 
 	if len(userData) == 0 {
-		fmt.Println(len(userData))
 		userData, err = database.ReadDatabaseFile()
 	}
 

@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
 )
@@ -12,7 +13,7 @@ func ConstructConfigLocation() (string, error) {
 	homedir, err := os.UserConfigDir()
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(fmt.Sprintf("Error getting user config dir: %s", err))
 		return "", err
 	}
 

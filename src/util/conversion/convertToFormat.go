@@ -14,6 +14,8 @@ func ConvertToFormat(targetFormat string, book search.Book) bool {
 	extension := path.Ext(existingFilepath)
 	outfile := existingFilepath[0:len(existingFilepath)-len(extension)] + "." + strings.ToLower(targetFormat)
 	cmd := exec.Command("ebook-convert", book.Filepath, outfile)
+	cmd.Stdout = nil
+	cmd.Stderr = nil
 	if err := cmd.Run(); err != nil {
 		return false
 	}

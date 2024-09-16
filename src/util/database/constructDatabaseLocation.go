@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
 )
@@ -12,7 +13,7 @@ func ConstructDatabaseLocation() (string, error) {
 	homedir, err := os.UserConfigDir()
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(fmt.Sprintf("Error getting user home directory: %s", err))
 		return "", err
 	}
 

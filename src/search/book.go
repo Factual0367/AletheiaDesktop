@@ -10,16 +10,18 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
 type Book struct {
-	libgenapi.Book // extend libgenapi.Book
-	Filename       string
-	Filepath       string
-	CoverPath      string
-	Downloaded     bool
-	DownloadFolder string // for tests
+	libgenapi.Book   // extend libgenapi.Book
+	Filename         string
+	Filepath         string
+	CoverPath        string
+	Downloaded       bool
+	DownloadFolder   string // for tests
+	DownloadProgress float64
 }
 
 func (book *Book) ConstructFilename() string {
@@ -74,6 +76,8 @@ func (book *Book) SaveToFile(response *http.Response) bool {
 }
 
 func (book *Book) Download() bool {
+	const chunkSize = 32 * 1024 // 32 KB
+
 	book.ConstructFilepath()
 	response, err := http.Get(book.DownloadLink)
 	if err != nil {
@@ -94,7 +98,43 @@ func (book *Book) Download() bool {
 		return false
 	}
 
-	book.Downloaded = book.SaveToFile(response)
+	outFile, err := os.Create(book.Filepath)
+	if err != nil {
+		log.Println("Failed to create file:", err)
+		return false
+	}
+	defer outFile.Close()
 
+	totalSize, _ := strconv.Atoi(response.Header.Get("Content-Length"))
+	book.DownloadProgress = 0
+
+	buf := make([]byte, chunkSize)
+	var downloaded int
+
+	for {
+		n, err := response.Body.Read(buf)
+		if n > 0 {
+			_, writeErr := outFile.Write(buf[:n])
+			if writeErr != nil {
+				log.Println("Failed to write to file:", writeErr)
+				return false
+			}
+
+			downloaded += n
+			book.DownloadProgress = float64(downloaded) / float64(totalSize)
+
+			log.Printf("Download progress: %.2f%%", book.DownloadProgress)
+		}
+
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			log.Println("Error during download:", err)
+			return false
+		}
+	}
+
+	book.Downloaded = true
 	return book.Downloaded
 }

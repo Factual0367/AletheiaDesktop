@@ -58,6 +58,7 @@ func main() {
 			downloadsView = views.CreateDownloadsView(myWindow, tabs)
 			tabs.Items[3] = downloadsView
 			tabs.Refresh()
+			views.StartDownloadsAutoRefresh(myWindow, tabs)
 		}
 	}
 

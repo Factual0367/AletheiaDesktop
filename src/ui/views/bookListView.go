@@ -30,7 +30,7 @@ func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container)
 
 	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {
 		go func() {
-			if !downloads.CheckInProgressDownloads(book) {
+			if !downloads.AddInProgressDownloads(&book) {
 				shared.SendNotification(book.Title, "Downloading")
 				success := book.Download()
 				if success {

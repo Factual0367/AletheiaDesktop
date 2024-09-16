@@ -2,6 +2,7 @@ package views
 
 import (
 	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/conversion"
 	"AletheiaDesktop/src/util/database"
 	"AletheiaDesktop/src/util/shared"
@@ -84,10 +85,6 @@ func ShowConversionPopup(appWindow fyne.Window, book search.Book, tabs *containe
 func loadSavedBooks() (map[string]*search.Book, error) {
 	userData, err := database.ReadDatabaseFile()
 
-	if len(userData) == 0 {
-		userData, err = database.ReadDatabaseFile()
-	}
-
 	if err != nil {
 		return nil, err
 	}
@@ -98,21 +95,31 @@ func loadSavedBooks() (map[string]*search.Book, error) {
 	return nil, nil
 }
 
-func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
-	grid.Objects = nil
-
+func filterBooks(books map[string]*search.Book, filter string) []*search.Book {
+	filteredBooks := []*search.Book{}
 	for _, book := range books {
 		if strings.Contains(strings.ToLower(book.Title), strings.ToLower(filter)) {
-			bookFileExists, err := shared.Exists(book.Filepath)
-			if err != nil {
-				log.Printf("Book does not exist, removing book from database. Title: %s", book.Title)
-				database.UpdateDatabase(*book, false, "downloaded")
-			}
-			if bookFileExists {
-				bookLibraryContainer := CreateBookLibraryContainer(*book, appWindow, tabs)
-				grid.Add(bookLibraryContainer)
-			}
+			filteredBooks = append(filteredBooks, book)
+		}
+	}
+	return filteredBooks
+}
 
+func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
+	grid.RemoveAll()
+
+	filteredBooks := filterBooks(books, filter)
+
+	for _, book := range filteredBooks {
+		bookFileExists, err := shared.Exists(book.Filepath)
+		if err != nil {
+			log.Printf("Book does not exist, removing book from database. Title: %s", book.Title)
+			database.UpdateDatabase(*book, false, "downloaded")
+			continue
+		}
+		if bookFileExists {
+			bookLibraryContainer := CreateBookLibraryContainer(*book, appWindow, tabs)
+			grid.Add(bookLibraryContainer)
 		}
 	}
 	grid.Refresh()
@@ -126,39 +133,35 @@ func RefreshLibraryTab(appWindow fyne.Window, tabs *container.AppTabs) {
 }
 
 func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
-	filterInput := widget.NewEntry()
-	filterInput.PlaceHolder = "Filter"
-	filterInput.Resize(fyne.NewSize(800, filterInput.MinSize().Height)) // Set the desired width
-
-	topWidgets := container.NewWithoutLayout(filterInput)
-
-	libraryViewGrid := container.NewVBox()
-	libraryViewGridScrollable := container.NewVScroll(libraryViewGrid)
-
+	// load data to show
 	savedBooks, err := loadSavedBooks()
 	if err != nil {
 		log.Printf("Could not read savedBooks %s", err)
 	}
 
-	if savedBooks != nil {
-		updateLibraryGrid(libraryViewGrid, savedBooks, "", appWindow, tabs)
-	}
-
+	libraryViewGrid := container.NewVBox()
+	libraryViewGridScrollable := container.NewVScroll(libraryViewGrid)
 	var typingTimer *time.Timer
-
+	filterInput := components.CreateFilterInput()
 	filterInput.OnChanged = func(filter string) {
 		if typingTimer != nil {
 			typingTimer.Stop() // stop timer
 		}
 
-		typingTimer = time.AfterFunc(500*time.Millisecond, func() { // 500ms delay so filtering does not get laggy
+		typingTimer = time.AfterFunc(300*time.Millisecond, func() { // 300ms delay so filtering does not get laggy
 			if savedBooks != nil {
 				updateLibraryGrid(libraryViewGrid, savedBooks, filter, appWindow, tabs)
 			}
 		})
 	}
+	topWidgets := container.NewWithoutLayout(filterInput)
+
+	// add data to view
+	if savedBooks != nil {
+		updateLibraryGrid(libraryViewGrid, savedBooks, "", appWindow, tabs)
+	}
 
 	libraryViewLayout := container.NewBorder(topWidgets, nil, nil, nil, libraryViewGridScrollable)
-
-	return container.NewTabItemWithIcon("Library", theme.StorageIcon(), libraryViewLayout)
+	libraryView := container.NewTabItemWithIcon("Library", theme.StorageIcon(), libraryViewLayout)
+	return libraryView
 }

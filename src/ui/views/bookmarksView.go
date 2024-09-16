@@ -2,11 +2,11 @@ package views
 
 import (
 	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/database"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
-	"fyne.io/fyne/v2/widget"
 	"log"
 	"strings"
 	"time"
@@ -30,9 +30,11 @@ func loadFavoriteBooks() (map[string]*search.Book, error) {
 }
 
 func updateBookmarksGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
-	grid.Objects = nil
+	grid.RemoveAll()
 
-	for _, book := range books {
+	filteredBooks := filterBooks(books, filter)
+
+	for _, book := range filteredBooks {
 		if strings.Contains(strings.ToLower(book.Title), strings.ToLower(filter)) {
 
 			bookLibraryContainer := CreateBookBookmarksContainer(*book, appWindow, tabs)
@@ -51,38 +53,34 @@ func refreshBookmarksTab(appWindow fyne.Window, tabs *container.AppTabs) {
 }
 
 func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
-	filterInput := widget.NewEntry()
-	filterInput.PlaceHolder = "Filter"
-	filterInput.Resize(fyne.NewSize(800, filterInput.MinSize().Height)) // Set the desired width
-
-	topWidgets := container.NewWithoutLayout(filterInput)
-
-	bookmarksViewGrid := container.NewVBox()
-	bookmarksViewGridScrollable := container.NewVScroll(bookmarksViewGrid)
 	favoriteBooks, err := loadFavoriteBooks()
 	if err != nil {
 		log.Printf("Could not read savedBooks %s", err)
 	}
 
-	if favoriteBooks != nil {
-		updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, "", appWindow, tabs)
-	}
+	filterInput := components.CreateFilterInput()
+	topWidgets := container.NewWithoutLayout(filterInput)
+	bookmarksViewGrid := container.NewVBox()
+	bookmarksViewGridScrollable := container.NewVScroll(bookmarksViewGrid)
 
 	var typingTimer *time.Timer
-
 	filterInput.OnChanged = func(filter string) {
 		if typingTimer != nil {
 			typingTimer.Stop() // stop timer
 		}
 
-		typingTimer = time.AfterFunc(500*time.Millisecond, func() { // 500ms delay so filtering does not get laggy
+		typingTimer = time.AfterFunc(300*time.Millisecond, func() { // 300ms delay so filtering does not get laggy
 			if favoriteBooks != nil {
 				updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, filter, appWindow, tabs)
 			}
 		})
 	}
 
-	bookmarksViewLayout := container.NewBorder(topWidgets, nil, nil, nil, bookmarksViewGridScrollable)
+	if favoriteBooks != nil {
+		updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, "", appWindow, tabs)
+	}
 
-	return container.NewTabItemWithIcon("Bookmarks", theme.ContentAddIcon(), bookmarksViewLayout)
+	bookmarksViewLayout := container.NewBorder(topWidgets, nil, nil, nil, bookmarksViewGridScrollable)
+	bookmarksView := container.NewTabItemWithIcon("Bookmarks", theme.ContentAddIcon(), bookmarksViewLayout)
+	return bookmarksView
 }

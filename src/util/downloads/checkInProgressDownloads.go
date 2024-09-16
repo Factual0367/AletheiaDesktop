@@ -1,15 +1,19 @@
 package downloads
 
-import "AletheiaDesktop/src/search"
+import (
+	"AletheiaDesktop/src/search"
+)
 
-var inProgressDownloads = make(map[string]search.Book)
+var InProgressDownloads = make(map[string]search.Book)
 
 func CheckInProgressDownloads(book search.Book) bool {
-	_, ok := inProgressDownloads[book.ID]
+
+	_, ok := InProgressDownloads[book.ID]
 
 	if ok {
 		return true
 	}
-	inProgressDownloads[book.ID] = book
+	InProgressDownloads[book.ID] = book
+
 	return false
 }

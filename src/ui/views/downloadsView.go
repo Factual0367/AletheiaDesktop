@@ -19,11 +19,27 @@ func RefreshDownloadsTab(appWindow fyne.Window, tabs *container.AppTabs) {
 	}
 }
 
+func StopDownloadsAutoRefresh() {
+	if downloadRefreshTicker != nil {
+		downloadRefreshTicker.Stop()
+		downloadRefreshTicker = nil
+	}
+}
+
 func CreateDownloadsView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
 	downloadsViewContainer := container.NewVBox()
+	shouldStopRefreshing := true
+
 	for _, book := range downloads.InProgressDownloads {
+		if book.DownloadProgress < 1 {
+			shouldStopRefreshing = false
+		}
 		bookDownloadsContainer := CreateBookDownloadsContainer(book)
 		downloadsViewContainer.Add(bookDownloadsContainer)
+	}
+
+	if shouldStopRefreshing {
+		StopDownloadsAutoRefresh()
 	}
 
 	return container.NewTabItemWithIcon("Downloads", theme.DownloadIcon(), downloadsViewContainer)
@@ -40,11 +56,4 @@ func StartDownloadsAutoRefresh(appWindow fyne.Window, tabs *container.AppTabs) {
 			RefreshDownloadsTab(appWindow, tabs)
 		}
 	}()
-}
-
-func StopDownloadsAutoRefresh() {
-	if downloadRefreshTicker != nil {
-		downloadRefreshTicker.Stop()
-		downloadRefreshTicker = nil
-	}
 }

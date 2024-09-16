@@ -2,9 +2,8 @@ package views
 
 import (
 	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/database"
-	"AletheiaDesktop/src/util/downloads"
-	"AletheiaDesktop/src/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -13,7 +12,6 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
-	"log"
 )
 
 func CreateBookBookmarksContainer(book search.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
@@ -30,26 +28,7 @@ func CreateBookBookmarksContainer(book search.Book, appWindow fyne.Window, tabs 
 		database.UpdateDatabase(book, false, "favorited")
 	})
 
-	var downloadButton *widget.Button
-
-	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {
-		go func() {
-			if !downloads.AddInProgressDownloads(&book) {
-				shared.SendNotification(book.Title, "Downloading")
-				success := book.Download()
-				if success {
-					shared.SendNotification(book.Title, "Downloaded successfully")
-					downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
-					database.UpdateDatabase(book, true, "downloaded") // true to add a book, false to remove
-					downloadButton.SetIcon(theme.ConfirmIcon())
-				} else {
-					shared.SendNotification(book.Title, "Download failed. Is Libgen down?")
-					log.Println(fmt.Sprintf("Download failed: %s"))
-					downloadButton.SetIcon(theme.ErrorIcon())
-				}
-			}
-		}()
-	})
+	downloadButton := components.CreateDownloadButton(book)
 
 	buttonContainer := container.NewHBox(unfavoriteButton, downloadButton, layout.NewSpacer())
 

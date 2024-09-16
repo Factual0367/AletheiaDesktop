@@ -122,8 +122,6 @@ func (book *Book) Download() bool {
 
 			downloaded += n
 			book.DownloadProgress = float64(downloaded) / float64(totalSize)
-
-			log.Printf("Download progress: %.2f%%", book.DownloadProgress)
 		}
 
 		if err != nil {

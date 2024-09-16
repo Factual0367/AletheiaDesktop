@@ -2,17 +2,15 @@ package views
 
 import (
 	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/cache"
-	"AletheiaDesktop/src/util/database"
 	"AletheiaDesktop/src/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/storage"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"log"
 )
 
 func createBookDetailsTopView(book search.Book) *fyne.Container {
@@ -44,33 +42,12 @@ func createBookDetailsTopView(book search.Book) *fyne.Container {
 	return topView
 }
 
-func createDownloadButton(book search.Book) *widget.Button {
-	var downloadButton *widget.Button
-
-	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {
-		go func() {
-			shared.SendNotification(book.Title, "Downloading")
-			success := book.Download()
-			if success {
-				shared.SendNotification(book.Title, "Downloaded successfully")
-				downloadButton = widget.NewButtonWithIcon("", theme.ConfirmIcon(), func() {})
-				database.UpdateDatabase(book, true, "downloaded") // true to add, false to remove from database
-			} else {
-				shared.SendNotification(book.Title, "Download failed")
-				log.Println(fmt.Sprintf("Download failed: %s"))
-				downloadButton.SetIcon(theme.ErrorIcon())
-			}
-		}()
-	})
-	return downloadButton
-}
-
 func createBookDetailsBottomView(book search.Book) *fyne.Container {
 	var bookDetailsString string
 	var bottomView *fyne.Container
 	var bookDetailsLabel *widget.Label
 
-	downloadButton := createDownloadButton(book)
+	downloadButton := components.CreateDownloadButton(book)
 
 	if book.Title == "" {
 		// this is the default view

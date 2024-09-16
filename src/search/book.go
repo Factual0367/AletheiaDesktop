@@ -83,6 +83,7 @@ func (book *Book) Download() bool {
 
 	if response.StatusCode != http.StatusOK {
 		log.Println(fmt.Errorf("failed to download file: %s", response.Status))
+		return false
 	}
 
 	book.Downloaded = book.SaveToFile(response)

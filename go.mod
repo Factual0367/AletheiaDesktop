@@ -5,9 +5,10 @@ go 1.23.1
 require (
 	fyne.io/fyne/v2 v2.5.1
 	github.com/gen2brain/beeep v0.0.0-20240516210008-9c006672e7f4
-	github.com/onurhanak/libgenapi v0.0.0-20240831180235-d9b33c006aa6
+	github.com/onurhanak/libgenapi v0.0.0-20240916110337-97fc14f5cc81
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/sqweek/dialog v0.0.0-20240226140203-065105509627
+	github.com/wneessen/go-mail v0.4.4
 )
 
 require (
@@ -49,7 +50,6 @@ require (
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/tadvi/systray v0.0.0-20190226123456-11a2b8fa57af // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
-	github.com/wneessen/go-mail v0.4.4 // indirect
 	github.com/yuin/goldmark v1.7.4 // indirect
 	golang.org/x/image v0.20.0 // indirect
 	golang.org/x/mobile v0.0.0-20240909163608-642950227fb3 // indirect

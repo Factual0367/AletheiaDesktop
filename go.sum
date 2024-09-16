@@ -266,6 +266,8 @@ github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d h1:VhgPp6v9qf9Agr/
 github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d/go.mod h1:YUTz3bUH2ZwIWBy3CJBeOBEugqcmXREj14T+iG/4k4U=
 github.com/onurhanak/libgenapi v0.0.0-20240831180235-d9b33c006aa6 h1:UB9nw+4bIoTN0h+5qEaDwUJXha5nTb0QiOanH2v7Zj0=
 github.com/onurhanak/libgenapi v0.0.0-20240831180235-d9b33c006aa6/go.mod h1:RwK5mM5Dw4IuerrBhltslS/GnswtejIKJnWCB2gQKww=
+github.com/onurhanak/libgenapi v0.0.0-20240916110337-97fc14f5cc81 h1:QdZrtDJl8wgusttKJUm3Qp2T5hqvXoIiaaHhT+HVLJA=
+github.com/onurhanak/libgenapi v0.0.0-20240916110337-97fc14f5cc81/go.mod h1:nfm7bLhhcKhru0xcnqhndOUVmUkSSWtrdExrb4/ePpw=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.9.3/go.mod h1:u1nR/EPcESfeI/szUZKdtJ0xRNbUoANCkoOuaOx1Y+c=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

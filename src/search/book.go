@@ -77,8 +77,16 @@ func (book *Book) Download() bool {
 	book.ConstructFilepath()
 	response, err := http.Get(book.DownloadLink)
 	if err != nil {
-		log.Println("Could not download book")
+		// try alternative download link
+		log.Println("Trying alternative download link")
+		altDownloadLinkErr := book.AddSecondDownloadLink()
+		response, err = http.Get(book.AlternativeDownloadLink)
+		if err != nil || altDownloadLinkErr != nil {
+			log.Println("First download link and second download link did not work.")
+			return false
+		}
 	}
+
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {

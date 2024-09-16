@@ -2,9 +2,9 @@ package views
 
 import (
 	"AletheiaDesktop/src/search"
-	conversion2 "AletheiaDesktop/src/util/conversion"
-	database2 "AletheiaDesktop/src/util/database"
-	shared2 "AletheiaDesktop/src/util/shared"
+	"AletheiaDesktop/src/util/conversion"
+	"AletheiaDesktop/src/util/database"
+	"AletheiaDesktop/src/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -27,11 +27,11 @@ func conversionPopup(appWindow fyne.Window, book search.Book, modal *widget.PopU
 
 	convertButton := widget.NewButtonWithIcon("Convert", theme.ContentRedoIcon(), func() {
 		go func() {
-			converted := conversion2.ConvertToFormat(targetFormat, book)
+			converted := conversion.ConvertToFormat(targetFormat, book)
 			if !converted {
-				shared2.SendNotification("Error", "Cannot convert book. Did you select the right format?")
+				shared.SendNotification("Error", "Cannot convert book. Did you select the right format?")
 			} else {
-				shared2.SendNotification("Success", "Your book is converted successfully.")
+				shared.SendNotification("Success", "Your book is converted successfully.")
 				RefreshLibraryTab(appWindow, tabs)
 
 			}
@@ -70,7 +70,7 @@ func installCalibrePopup(appWindow fyne.Window, modal *widget.PopUp) *widget.Pop
 func ShowConversionPopup(appWindow fyne.Window, book search.Book, tabs *container.AppTabs) *widget.PopUp {
 	var modal *widget.PopUp
 
-	calibreExists := conversion2.CheckCalibreInstalled()
+	calibreExists := conversion.CheckCalibreInstalled()
 	fmt.Println(calibreExists)
 
 	if calibreExists {
@@ -85,11 +85,11 @@ func ShowConversionPopup(appWindow fyne.Window, book search.Book, tabs *containe
 }
 
 func loadSavedBooks() (map[string]*search.Book, error) {
-	userData, err := database2.ReadDatabaseFile()
+	userData, err := database.ReadDatabaseFile()
 
 	if len(userData) == 0 {
 		fmt.Println(len(userData))
-		userData, err = database2.ReadDatabaseFile()
+		userData, err = database.ReadDatabaseFile()
 	}
 
 	if err != nil {
@@ -107,10 +107,10 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 
 	for _, book := range books {
 		if strings.Contains(strings.ToLower(book.Title), strings.ToLower(filter)) {
-			bookFileExists, err := shared2.Exists(book.Filepath)
+			bookFileExists, err := shared.Exists(book.Filepath)
 			if err != nil {
 				log.Printf("Book does not exist, removing book from database. Title: %s", book.Title)
-				database2.UpdateDatabase(*book, false, "downloaded")
+				database.UpdateDatabase(*book, false, "downloaded")
 			}
 			if bookFileExists {
 				bookLibraryContainer := CreateBookLibraryContainer(*book, appWindow, tabs)
@@ -123,7 +123,6 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filt
 }
 
 func RefreshLibraryTab(appWindow fyne.Window, tabs *container.AppTabs) {
-
 	newLibraryView := CreateLibraryView(appWindow, tabs)
 	tabs.Items[1] = newLibraryView
 	tabs.SelectIndex(1)

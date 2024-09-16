@@ -1,9 +1,9 @@
 package views
 
 import (
-	config2 "AletheiaDesktop/src/util/config"
-	email2 "AletheiaDesktop/src/util/email"
-	shared2 "AletheiaDesktop/src/util/shared"
+	"AletheiaDesktop/src/util/config"
+	"AletheiaDesktop/src/util/email"
+	"AletheiaDesktop/src/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -12,15 +12,15 @@ import (
 )
 
 func createDownloadLocationContainer() *fyne.Container {
-	downloadDir := config2.GetCurrentDownloadFolder()
+	downloadDir := config.GetCurrentDownloadFolder()
 	currentLibraryLocationMsg := "Current Library Location: "
 	currentDownloadDirLabel := widget.NewLabel(currentLibraryLocationMsg)
 	currentDownloadDirLabel.TextStyle = fyne.TextStyle{Bold: true}
 	downloadDirLabel := widget.NewLabel(downloadDir)
 
 	changeDownloadLocationButton := widget.NewButtonWithIcon("Change Library Location", theme.FolderIcon(), func() {
-		newDownloadDir := shared2.GetFolder()
-		config2.UpdateDownloadPath(newDownloadDir)
+		newDownloadDir := shared.GetFolder()
+		config.UpdateDownloadPath(newDownloadDir)
 		downloadDirLabel.SetText(fmt.Sprintf("%s \n%s", currentLibraryLocationMsg, newDownloadDir))
 	})
 
@@ -33,17 +33,17 @@ func createEmailContainer() *fyne.Container {
 	emailLabel.TextStyle = fyne.TextStyle{Bold: true}
 
 	emailEntry := widget.NewEntry()
-	userEmail := email2.GetUserEmail()
+	userEmail := email.GetUserEmail()
 	emailEntry.PlaceHolder = userEmail
 	userPassword := widget.NewPasswordEntry()
 
 	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {
-		emailSaved := email2.SaveEmail(emailEntry.Text)
-		passwordSaved := email2.SavePassword(userPassword.Text)
+		emailSaved := email.SaveEmail(emailEntry.Text)
+		passwordSaved := email.SavePassword(userPassword.Text)
 		if emailSaved && passwordSaved {
-			shared2.SendNotification("Success", "Your email has been saved.")
+			shared.SendNotification("Success", "Your email has been saved.")
 		} else {
-			shared2.SendNotification("Error", "Failed to save your email.")
+			shared.SendNotification("Error", "Failed to save your email.")
 		}
 	})
 

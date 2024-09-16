@@ -3,7 +3,7 @@ package views
 import (
 	"AletheiaDesktop/src/search"
 	"AletheiaDesktop/src/util/email"
-	shared2 "AletheiaDesktop/src/util/shared"
+	"AletheiaDesktop/src/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -27,7 +27,7 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *c
 
 	openButton := widget.NewButtonWithIcon("", theme.FileIcon(), func() {
 		go func() {
-			err := shared2.OpenWithDefaultApp(book.Filepath)
+			err := shared.OpenWithDefaultApp(book.Filepath)
 			if err != nil {
 				log.Fatalln("Could not open book with default application.")
 			}
@@ -41,7 +41,7 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *c
 	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
 		confirmDialog := dialog.NewConfirm("Are you sure?", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {
 			if b {
-				shared2.DeleteBook(book)
+				shared.DeleteBook(book)
 				RefreshLibraryTab(appWindow, tabs)
 			}
 		}, appWindow)
@@ -49,7 +49,7 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *c
 	})
 
 	openLibraryFolderButton := widget.NewButtonWithIcon("", theme.FolderOpenIcon(), func() {
-		shared2.OpenLibraryFolder()
+		shared.OpenLibraryFolder()
 	})
 
 	var emailBookButton *widget.Button
@@ -57,10 +57,10 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *c
 		go func() {
 			emailSent := email.SendBookEmail(book)
 			if emailSent {
-				shared2.SendNotification("Success", "Your book is emailed successfully.")
+				shared.SendNotification("Success", "Your book is emailed successfully.")
 				emailBookButton.SetIcon(theme.ConfirmIcon())
 			} else {
-				shared2.SendNotification("Failed", "Your book could not be emailed. Check your credentials.")
+				shared.SendNotification("Failed", "Your book could not be emailed. Check your credentials.")
 				emailBookButton.SetIcon(theme.ErrorIcon())
 			}
 		}()

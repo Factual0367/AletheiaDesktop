@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -26,16 +27,9 @@ type Book struct {
 
 func (book *Book) ConstructFilename() string {
 	filename := fmt.Sprintf("%s - %s.%s", book.Author, book.Title, book.Extension)
-	// sanitize filename for Windows
-	filename = strings.ReplaceAll(filename, "/", "_")
-	filename = strings.ReplaceAll(filename, "\\", "_")
-	filename = strings.ReplaceAll(filename, ":", "_")
-	filename = strings.ReplaceAll(filename, "*", "_")
-	filename = strings.ReplaceAll(filename, "?", "_")
-	filename = strings.ReplaceAll(filename, "\"", "_")
-	filename = strings.ReplaceAll(filename, "<", "_")
-	filename = strings.ReplaceAll(filename, ">", "_")
-	filename = strings.ReplaceAll(filename, "|", "_")
+
+	regex := regexp.MustCompile(`[\/\\:\*\?"<>\|]`)
+	filename = regex.ReplaceAllString(filename, "_")
 
 	filename = strings.TrimSpace(filename)
 	book.Filename = filename

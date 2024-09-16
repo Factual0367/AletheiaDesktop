@@ -2,17 +2,16 @@ package views
 
 import (
 	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/email"
 	"AletheiaDesktop/src/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"image/color"
 	"log"
 )
 
@@ -68,10 +67,7 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *c
 
 	buttonContainer := container.NewHBox(openButton, openLibraryFolderButton, emailBookButton, convertButton, deleteButton, layout.NewSpacer())
 
-	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
-	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}
-	border.StrokeWidth = 2
-	border.CornerRadius = 10
+	border := components.CreateBorderBox()
 
 	bookCover := createBookDetailsTopView(book)
 

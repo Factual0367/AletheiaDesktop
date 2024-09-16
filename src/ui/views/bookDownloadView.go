@@ -2,12 +2,11 @@ package views
 
 import (
 	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/ui/components"
 	"fmt"
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"image/color"
 )
 
 func CreateBookDownloadsContainer(book *search.Book) *fyne.Container {
@@ -22,10 +21,8 @@ func CreateBookDownloadsContainer(book *search.Book) *fyne.Container {
 
 	progressBar := widget.NewProgressBar()
 	progressBar.SetValue(book.DownloadProgress)
-	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
-	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}
-	border.StrokeWidth = 2
-	border.CornerRadius = 10
+
+	border := components.CreateBorderBox()
 
 	borderedContainer := container.NewStack(border, container.NewVBox(bookDetailsLabel, progressBar))
 	borderedContainerWithCover := container.NewVBox(borderedContainer)

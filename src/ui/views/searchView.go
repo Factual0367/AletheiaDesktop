@@ -1,6 +1,7 @@
 package views
 
 import (
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/search"
 	"AletheiaDesktop/src/util/cache"
 	"AletheiaDesktop/src/util/shared"
@@ -24,7 +25,7 @@ func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Cont
 	bookGrid := container.NewVBox()
 
 	for _, book := range query.Results {
-		convertedBook := search.Book{
+		convertedBook := models.Book{
 			Book:       book,
 			Filename:   "",
 			Filepath:   "",
@@ -41,7 +42,7 @@ func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Cont
 }
 
 func createDefaultDetailsView() *fyne.Container {
-	defaultBook := search.Book{
+	defaultBook := models.Book{
 		Book: libgenapi.Book{
 			ID:        "Default",
 			Title:     "Select a book to view details.",

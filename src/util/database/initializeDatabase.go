@@ -1,14 +1,14 @@
 package database
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"log"
 )
 
 func InitializeDatabase() map[string]interface{} {
 	initialEmptyDatabase := map[string]interface{}{
-		"savedBooks":    map[string]*search.Book{},
-		"favoriteBooks": map[string]*search.Book{},
+		"savedBooks":    map[string]*models.Book{},
+		"favoriteBooks": map[string]*models.Book{},
 	}
 
 	fileWriteErr := WriteDatabaseToFile(initialEmptyDatabase)

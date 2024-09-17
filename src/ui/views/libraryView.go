@@ -1,7 +1,7 @@
 package views
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/conversion"
 	"AletheiaDesktop/src/util/database"
@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-func conversionPopup(appWindow fyne.Window, book search.Book, tabs *container.AppTabs) *widget.PopUp {
+func conversionPopup(appWindow fyne.Window, book models.Book, tabs *container.AppTabs) *widget.PopUp {
 	var targetFormat string
 	var modal *widget.PopUp
 
@@ -56,7 +56,7 @@ func installCalibrePopup(appWindow fyne.Window) *widget.PopUp {
 	return modal
 }
 
-func ShowConversionPopup(appWindow fyne.Window, book search.Book, tabs *container.AppTabs) {
+func ShowConversionPopup(appWindow fyne.Window, book models.Book, tabs *container.AppTabs) {
 	if conversion.CheckCalibreInstalled() {
 		conversionPopup(appWindow, book, tabs).Show()
 	} else {
@@ -64,21 +64,21 @@ func ShowConversionPopup(appWindow fyne.Window, book search.Book, tabs *containe
 	}
 }
 
-func loadSavedBooks() (map[string]*search.Book, error) {
+func loadSavedBooks() (map[string]*models.Book, error) {
 	userData, err := database.ReadDatabaseFile()
 	if err != nil {
 		return nil, err
 	}
 
-	if savedBooks, ok := userData["savedBooks"].(map[string]*search.Book); ok {
+	if savedBooks, ok := userData["savedBooks"].(map[string]*models.Book); ok {
 		return savedBooks, nil
 	}
 	return nil, nil
 }
 
-func filterBooks(books map[string]*search.Book, filter string) []*search.Book {
+func filterBooks(books map[string]*models.Book, filter string) []*models.Book {
 	filter = strings.ToLower(filter)
-	var filteredBooks []*search.Book
+	var filteredBooks []*models.Book
 	for _, book := range books {
 		if strings.Contains(strings.ToLower(book.Title), filter) {
 			filteredBooks = append(filteredBooks, book)
@@ -87,7 +87,7 @@ func filterBooks(books map[string]*search.Book, filter string) []*search.Book {
 	return filteredBooks
 }
 
-func updateLibraryGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
+func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
 	for _, book := range filterBooks(books, filter) {
 		if exists, err := shared.Exists(book.Filepath); exists && err == nil {

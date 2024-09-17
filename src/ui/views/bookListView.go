@@ -1,7 +1,7 @@
 package views
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/database"
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container) *fyne.Container {
+func CreateBookListContainer(book models.Book, DetailsContainer *fyne.Container) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"%s\n%s\nFiletype: %s\nFilesize: %s",
 		book.Title, book.Author, book.Extension, book.Size)

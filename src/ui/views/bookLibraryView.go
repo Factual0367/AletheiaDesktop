@@ -1,7 +1,7 @@
 package views
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/email"
 	"AletheiaDesktop/src/util/shared"
@@ -15,7 +15,7 @@ import (
 	"log"
 )
 
-func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
+func CreateBookLibraryContainer(book models.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",
 		book.Title, book.Author, book.Extension, book.Size, book.Language, book.Pages, book.Publisher,

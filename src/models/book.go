@@ -1,4 +1,4 @@
-package search
+package models
 
 import (
 	"AletheiaDesktop/src/util/cache"

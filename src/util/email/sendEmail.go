@@ -1,12 +1,12 @@
 package email
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"github.com/wneessen/go-mail"
 	"log"
 )
 
-func composeSendMessage(userEmail string, userPassword string, book search.Book) bool {
+func composeSendMessage(userEmail string, userPassword string, book models.Book) bool {
 	m := mail.NewMsg()
 	if err := m.From(userEmail); err != nil {
 		log.Println("failed to set From address: %s", err)
@@ -32,7 +32,7 @@ func composeSendMessage(userEmail string, userPassword string, book search.Book)
 	return true
 }
 
-func SendBookEmail(book search.Book) bool {
+func SendBookEmail(book models.Book) bool {
 	userEmail := GetUserEmail()
 	userPassword := GetUserPassword()
 	emailSent := composeSendMessage(userEmail, userPassword, book)

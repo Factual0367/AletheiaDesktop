@@ -1,7 +1,7 @@
 package conversion
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/util/database"
 	"fmt"
 	"os/exec"
@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func ConvertToFormat(targetFormat string, book search.Book) bool {
+func ConvertToFormat(targetFormat string, book models.Book) bool {
 	existingFilepath := book.Filepath
 	extension := path.Ext(existingFilepath)
 	outfile := existingFilepath[0:len(existingFilepath)-len(extension)] + "." + strings.ToLower(targetFormat)

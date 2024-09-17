@@ -1,7 +1,7 @@
 package views
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/database"
 	"fyne.io/fyne/v2"
@@ -11,19 +11,19 @@ import (
 	"time"
 )
 
-func loadFavoriteBooks() (map[string]*search.Book, error) {
+func loadFavoriteBooks() (map[string]*models.Book, error) {
 	userData, err := database.ReadDatabaseFile()
 	if err != nil || len(userData) == 0 {
 		return nil, err
 	}
 
-	if favoriteBooks, ok := userData["favoriteBooks"].(map[string]*search.Book); ok {
+	if favoriteBooks, ok := userData["favoriteBooks"].(map[string]*models.Book); ok {
 		return favoriteBooks, nil
 	}
 	return nil, nil
 }
 
-func updateBookmarksGrid(grid *fyne.Container, books map[string]*search.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
+func updateBookmarksGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
 
 	filteredBooks := filterBooks(books, filter)

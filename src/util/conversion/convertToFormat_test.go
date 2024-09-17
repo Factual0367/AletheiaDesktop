@@ -2,7 +2,7 @@
 package conversion
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"github.com/onurhanak/libgenapi"
 	"io/ioutil"
 	"os"
@@ -30,7 +30,7 @@ func TestConvertToFormat(t *testing.T) {
 		t.Fatalf("Failed to write input file: %v", err)
 	}
 
-	book := search.Book{
+	book := models.Book{
 		Filepath: inputFile,
 		Book: libgenapi.Book{
 			ID: "1234",

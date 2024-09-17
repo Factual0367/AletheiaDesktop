@@ -1,12 +1,12 @@
 package database
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"fmt"
 	"log"
 )
 
-func UpdateDatabase(Book search.Book, add bool, saveType string) {
+func UpdateDatabase(Book models.Book, add bool, saveType string) {
 	existingDatabaseContent, databaseReadErr := ReadDatabaseFile()
 	if databaseReadErr != nil {
 		log.Fatalln(databaseReadErr.Error())

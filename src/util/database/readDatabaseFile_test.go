@@ -2,7 +2,7 @@
 package database
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"encoding/json"
 	"github.com/onurhanak/libgenapi"
 	"io/ioutil"
@@ -40,7 +40,7 @@ func removeDatabaseFile(t *testing.T, path string) {
 
 func TestReadDatabaseFile_Success(t *testing.T) {
 	userData := map[string]interface{}{
-		"savedBooks": map[string]*search.Book{
+		"savedBooks": map[string]*models.Book{
 			"book1": {
 				Book: libgenapi.Book{
 					ID:    "book1",
@@ -48,7 +48,7 @@ func TestReadDatabaseFile_Success(t *testing.T) {
 				},
 			},
 		},
-		"favoriteBooks": map[string]*search.Book{
+		"favoriteBooks": map[string]*models.Book{
 			"book2": {
 				Book: libgenapi.Book{
 					ID:    "book2",
@@ -74,7 +74,7 @@ func TestReadDatabaseFile_Success(t *testing.T) {
 		t.Errorf("Expected 2 keys in result, got %d", len(result))
 	}
 
-	savedBooks, ok := result["savedBooks"].(map[string]*search.Book)
+	savedBooks, ok := result["savedBooks"].(map[string]*models.Book)
 	if !ok {
 		t.Errorf("Expected savedBooks to be map[string]*search.Book, got %T", result["savedBooks"])
 	} else {
@@ -86,7 +86,7 @@ func TestReadDatabaseFile_Success(t *testing.T) {
 		}
 	}
 
-	favoriteBooks, ok := result["favoriteBooks"].(map[string]*search.Book)
+	favoriteBooks, ok := result["favoriteBooks"].(map[string]*models.Book)
 	if !ok {
 		t.Errorf("Expected favoriteBooks to be map[string]*search.Book, got %T", result["favoriteBooks"])
 	} else {

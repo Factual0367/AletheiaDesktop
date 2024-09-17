@@ -1,7 +1,7 @@
 package views
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/cache"
 	"AletheiaDesktop/src/util/shared"
@@ -13,7 +13,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func createBookDetailsTopView(book search.Book) *fyne.Container {
+func createBookDetailsTopView(book models.Book) *fyne.Container {
 	coverImageSize := fyne.NewSize(120, 200)
 	var bookCover *canvas.Image
 
@@ -42,7 +42,7 @@ func createBookDetailsTopView(book search.Book) *fyne.Container {
 	return topView
 }
 
-func createBookDetailsBottomView(book search.Book) *fyne.Container {
+func createBookDetailsBottomView(book models.Book) *fyne.Container {
 	var bookDetailsString string
 	var bottomView *fyne.Container
 	var bookDetailsLabel *widget.Label
@@ -90,7 +90,7 @@ func createBookDetailsBottomView(book search.Book) *fyne.Container {
 	return bottomView
 }
 
-func CreateBookDetailsView(book search.Book, isDefaultBook bool) *fyne.Container {
+func CreateBookDetailsView(book models.Book, isDefaultBook bool) *fyne.Container {
 	var bottomView *fyne.Container
 
 	if isDefaultBook {

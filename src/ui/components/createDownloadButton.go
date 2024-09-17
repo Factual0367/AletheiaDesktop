@@ -1,7 +1,7 @@
 package components
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/util/database"
 	"AletheiaDesktop/src/util/downloads"
 	"AletheiaDesktop/src/util/shared"
@@ -11,7 +11,7 @@ import (
 	"log"
 )
 
-func CreateDownloadButton(book search.Book) *widget.Button {
+func CreateDownloadButton(book models.Book) *widget.Button {
 	var downloadButton *widget.Button
 
 	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {

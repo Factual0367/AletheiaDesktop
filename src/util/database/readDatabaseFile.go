@@ -1,7 +1,7 @@
 package database
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/util/shared"
 	"encoding/json"
 	"fmt"
@@ -38,7 +38,7 @@ func ReadDatabaseFile() (map[string]interface{}, error) {
 
 		unmarshalBooks := func(key string) error {
 			if booksRaw, ok := userData[key]; ok {
-				books := make(map[string]*search.Book)
+				books := make(map[string]*models.Book)
 				booksBytes, marshalErr := json.Marshal(booksRaw)
 				if marshalErr != nil {
 					return fmt.Errorf("Error marshaling %s: %v", key, marshalErr)

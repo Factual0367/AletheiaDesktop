@@ -1,15 +1,15 @@
 package database
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 )
 
-func addBook(book *search.Book, existingDatabaseContent map[string]interface{}) map[string]interface{} {
+func addBook(book *models.Book, existingDatabaseContent map[string]interface{}) map[string]interface{} {
 	if existingDatabaseContent["savedBooks"] == nil {
-		existingDatabaseContent["savedBooks"] = map[string]*search.Book{}
+		existingDatabaseContent["savedBooks"] = map[string]*models.Book{}
 	}
 
-	savedBooks := existingDatabaseContent["savedBooks"].(map[string]*search.Book)
+	savedBooks := existingDatabaseContent["savedBooks"].(map[string]*models.Book)
 
 	savedBooks[book.ID] = book
 

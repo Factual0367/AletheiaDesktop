@@ -1,7 +1,7 @@
 package views
 
 import (
-	"AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/ui/components"
 	"fmt"
 	"fyne.io/fyne/v2"
@@ -9,7 +9,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func CreateBookDownloadsContainer(book *search.Book) *fyne.Container {
+func CreateBookDownloadsContainer(book *models.Book) *fyne.Container {
 
 	bookDetailsString := fmt.Sprintf(
 		"Title: %s\nAuthor: %s",

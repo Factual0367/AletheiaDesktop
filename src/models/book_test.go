@@ -1,7 +1,6 @@
-package search
+package models
 
 import (
-	"AletheiaDesktop/src/models"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -15,7 +14,7 @@ import (
 )
 
 func TestConstructFilename(t *testing.T) {
-	book := &models.Book{
+	book := &Book{
 		Book: libgenapi.Book{
 			Author:    "John/Smith",
 			Title:     "Go Programming: A Comprehensive Guide?",
@@ -38,7 +37,7 @@ func TestSaveToFile(t *testing.T) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	book := &models.Book{
+	book := &Book{
 		Filepath: filepath.Join(tempDir, "testfile.txt"),
 	}
 
@@ -75,7 +74,7 @@ func TestDownload(t *testing.T) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	book := &models.Book{
+	book := &Book{
 		Book: libgenapi.Book{
 			Author:       "Bob",
 			Title:        "Mastering Go",

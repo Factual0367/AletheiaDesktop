@@ -25,8 +25,6 @@ func CreateBookDownloadsContainer(book *search.Book) *fyne.Container {
 	border := components.CreateBorderBox()
 
 	borderedContainer := container.NewStack(border, container.NewVBox(bookDetailsLabel, progressBar))
-	borderedContainerWithCover := container.NewVBox(borderedContainer)
-	//borderedContainerWithCover.SetOffset(0.10)
 
-	return container.NewVBox(borderedContainerWithCover)
+	return container.NewVBox(borderedContainer)
 }

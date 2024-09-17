@@ -28,7 +28,8 @@ func CreateBookLibraryContainer(book search.Book, appWindow fyne.Window, tabs *c
 		go func() {
 			err := shared.OpenWithDefaultApp(book.Filepath)
 			if err != nil {
-				log.Fatalln("Could not open book with default application.")
+				log.Println("Could not open book with default application.")
+				shared.SendNotification("Error", "Aletheia cannot find an application that can open your book.")
 			}
 		}()
 	})

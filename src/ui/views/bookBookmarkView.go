@@ -22,8 +22,8 @@ func CreateBookBookmarksContainer(book search.Book, appWindow fyne.Window, tabs 
 	bookDetailsLabel.Wrapping = fyne.TextWrapWord
 
 	unfavoriteButton := widget.NewButtonWithIcon("", theme.ContentRemoveIcon(), func() {
-		refreshBookmarksTab(appWindow, tabs)
 		database.UpdateDatabase(book, false, "favorited")
+		refreshBookmarksTab(appWindow, tabs)
 	})
 
 	downloadButton := components.CreateDownloadButton(book)

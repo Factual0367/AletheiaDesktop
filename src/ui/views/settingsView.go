@@ -12,49 +12,42 @@ import (
 )
 
 func createDownloadLocationContainer() *fyne.Container {
-	downloadDir := config.GetCurrentDownloadFolder()
 	currentLibraryLocationMsg := "Current Library Location: "
-	currentDownloadDirLabel := widget.NewLabel(currentLibraryLocationMsg)
-	currentDownloadDirLabel.TextStyle = fyne.TextStyle{Bold: true}
+	downloadDir := config.GetCurrentDownloadFolder()
+
+	currentDownloadDirLabel := widget.NewLabelWithStyle(currentLibraryLocationMsg, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
 	downloadDirLabel := widget.NewLabel(downloadDir)
 
 	changeDownloadLocationButton := widget.NewButtonWithIcon("Change Library Location", theme.FolderIcon(), func() {
 		newDownloadDir := shared.GetFolder()
-		config.UpdateDownloadPath(newDownloadDir)
-		downloadDirLabel.SetText(fmt.Sprintf("%s \n%s", currentLibraryLocationMsg, newDownloadDir))
-	})
-
-	downloadLocationContainer := container.NewVBox(currentDownloadDirLabel, downloadDirLabel, changeDownloadLocationButton)
-	return downloadLocationContainer
-}
-
-func createEmailContainer() *fyne.Container {
-	emailLabel := widget.NewLabel("Email")
-	emailLabel.TextStyle = fyne.TextStyle{Bold: true}
-
-	emailEntry := widget.NewEntry()
-	userEmail := email.GetUserEmail()
-	emailEntry.PlaceHolder = userEmail
-	userPassword := widget.NewPasswordEntry()
-
-	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {
-		emailSaved := email.SaveEmail(emailEntry.Text)
-		passwordSaved := email.SavePassword(userPassword.Text)
-		if emailSaved && passwordSaved {
-			shared.SendNotification("Success", "Your email has been saved.")
-		} else {
-			shared.SendNotification("Error", "Failed to save your email.")
+		if newDownloadDir != "" {
+			config.UpdateDownloadPath(newDownloadDir)
+			downloadDirLabel.SetText(fmt.Sprintf("%s \n%s", currentLibraryLocationMsg, newDownloadDir))
 		}
 	})
 
-	entryContainer := container.NewVBox(
-		emailEntry,
-		userPassword,
-		saveEmailButton,
-	)
+	return container.NewVBox(currentDownloadDirLabel, downloadDirLabel, changeDownloadLocationButton)
+}
 
-	emailContainer := container.NewVBox(emailLabel, entryContainer)
-	return emailContainer
+func createEmailContainer() *fyne.Container {
+	emailLabel := widget.NewLabelWithStyle("Email", fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
+
+	emailEntry := widget.NewEntry()
+	emailEntry.PlaceHolder = email.GetUserEmail()
+
+	passwordEntry := widget.NewPasswordEntry()
+
+	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {
+		emailSaved := email.SaveEmail(emailEntry.Text)
+		passwordSaved := email.SavePassword(passwordEntry.Text)
+		if emailSaved && passwordSaved {
+			shared.SendNotification("Success", "Your email and password have been saved.")
+		} else {
+			shared.SendNotification("Error", "Failed to save your email or password.")
+		}
+	})
+
+	return container.NewVBox(emailLabel, emailEntry, passwordEntry, saveEmailButton)
 }
 
 func CreateSettingsView() *container.TabItem {
@@ -64,7 +57,7 @@ func CreateSettingsView() *container.TabItem {
 
 	padding := widget.NewLabel("")
 
-	settingsInnerContent := container.NewGridWithRows(4, padding, downloadLocationContainer)
+	settingsInnerContent := container.NewGridWithRows(3, padding, downloadLocationContainer)
 	settingsContent := container.NewVBox(
 		container.NewGridWithColumns(3, padding, settingsInnerContent, padding),
 		container.NewGridWithColumns(3, padding, emailContainer, padding),

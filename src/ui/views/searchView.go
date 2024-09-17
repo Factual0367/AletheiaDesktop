@@ -1,7 +1,7 @@
 package views
 
 import (
-	search2 "AletheiaDesktop/src/search"
+	"AletheiaDesktop/src/search"
 	"AletheiaDesktop/src/util/cache"
 	"AletheiaDesktop/src/util/shared"
 	"fyne.io/fyne/v2"
@@ -15,16 +15,18 @@ import (
 	"strconv"
 )
 
-var searchType string = "Default"
-var numberOfResults int = 25
+var (
+	searchType      = "Default"
+	numberOfResults = 25
+)
 
 func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Container) *fyne.Container {
 	bookGrid := container.NewVBox()
 
 	for _, book := range query.Results {
-		convertedBook := search2.Book{
-			Book:       book, // extend libgenapi.Book
-			Filename:   "",   // initialize with dummy values
+		convertedBook := search.Book{
+			Book:       book,
+			Filename:   "",
 			Filepath:   "",
 			Downloaded: false,
 		}
@@ -39,7 +41,7 @@ func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Cont
 }
 
 func createDefaultDetailsView() *fyne.Container {
-	defaultBook := search2.Book{
+	defaultBook := search.Book{
 		Book: libgenapi.Book{
 			ID:        "Default",
 			Title:     "Select a book to view details.",
@@ -50,26 +52,26 @@ func createDefaultDetailsView() *fyne.Container {
 		Downloaded: false,
 		CoverPath:  path.Join(cache.GetAletheiaCache(), "Default"),
 	}
+
 	defaultDetailsView := CreateBookDetailsView(defaultBook, true)
-	defaultDetailsViewContainer := container.NewVBox(defaultDetailsView)
-	return defaultDetailsViewContainer
+	return container.NewVBox(defaultDetailsView)
 }
 
-func createSearchBar(onSearch func()) (searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select, numberOfResultsSelector *widget.Select) {
-	searchInput = widget.NewEntry()
+func createSearchBar(onSearch func()) (*widget.Entry, *widget.Button, *widget.Select, *widget.Select) {
+	searchInput := widget.NewEntry()
 	searchInput.SetPlaceHolder("Enter search query")
 
-	searchButton = widget.NewButtonWithIcon("", theme.SearchIcon(), func() { onSearch() })
+	searchButton := widget.NewButtonWithIcon("", theme.SearchIcon(), onSearch)
 	searchInput.OnSubmitted = func(text string) { onSearch() }
 
-	searchTypeWidget = widget.NewSelect([]string{"Default", "Author", "Title"}, func(value string) {
+	searchTypeWidget := widget.NewSelect([]string{"Default", "Author", "Title"}, func(value string) {
 		searchType = value
-		log.Println("Select set to", value)
+		log.Println("Search type set to", value)
 	})
 	searchTypeWidget.PlaceHolder = "Default"
 
-	numberOfResultsSelector = widget.NewSelect([]string{"25", "50", "100"}, func(value string) {
-		numberOfResults, _ = strconv.Atoi(value) // handle this
+	numberOfResultsSelector := widget.NewSelect([]string{"25", "50", "100"}, func(value string) {
+		numberOfResults, _ = strconv.Atoi(value)
 		log.Println("Number of results set to", value)
 	})
 	numberOfResultsSelector.PlaceHolder = "25"
@@ -78,34 +80,33 @@ func createSearchBar(onSearch func()) (searchInput *widget.Entry, searchButton *
 }
 
 func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select, numberOfResultsSelector *widget.Select) *fyne.Container {
-
-	searchInputContainer := container.NewStack(searchInput)
-	searchInputContainer.MinSize()
-	topContent := container.NewGridWithColumns(2, searchInputContainer, container.NewHBox(searchButton, searchTypeWidget, numberOfResultsSelector, layout.NewSpacer()))
+	topContent := container.NewGridWithColumns(2,
+		container.NewStack(searchInput),
+		container.NewHBox(searchButton, searchTypeWidget, numberOfResultsSelector, layout.NewSpacer()),
+	)
 	return topContent
 }
 
-func executeSearch(searchInput *widget.Entry, searchType string, resultsContainer *fyne.Container, defaultDetailsContainer *fyne.Container) {
-	resultsContainer.Objects = nil // clear previous results
+func executeSearch(searchInput *widget.Entry, searchType string, resultsContainer, detailsContainer *fyne.Container) {
+	resultsContainer.Objects = nil // Clear previous results
 
 	go func() {
-		query, err := search2.SearchLibgen(searchInput.Text, searchType, numberOfResults)
+		query, err := search.SearchLibgen(searchInput.Text, searchType, numberOfResults)
 		if err != nil {
 			shared.SendNotification("Failed", "Library Genesis is not responding.")
+			return
 		}
 
 		if query != nil {
-			resultsContainer.Add(constructBookContainers(query, defaultDetailsContainer))
-			resultsContainer.Refresh() // refresh to display new results
+			resultsContainer.Add(constructBookContainers(query, detailsContainer))
+			resultsContainer.Refresh()
 		}
 	}()
 }
 
 func CreateSearchView() *container.TabItem {
 	resultsContainer := container.NewVBox()
-	resultsContentScrollable := container.NewVScroll(resultsContainer)
 	detailsContainer := createDefaultDetailsView()
-
 	var searchInput = widget.NewEntry()
 
 	searchInput, searchButton, searchTypeWidget, numberOfResultsSelector := createSearchBar(func() {
@@ -115,15 +116,12 @@ func CreateSearchView() *container.TabItem {
 	topContent := layoutTopContent(searchInput, searchButton, searchTypeWidget, numberOfResultsSelector)
 
 	searchContent := container.NewBorder(
-		topContent, nil, nil, nil, // bottom, left, right are nil
-		resultsContentScrollable, // center content
+		topContent, nil, nil, nil,
+		container.NewVScroll(resultsContainer), // Results are scrollable
 	)
 
-	splitView := container.NewHSplit(
-		detailsContainer,
-		searchContent,
-	)
-	splitView.SetOffset(0.20)
+	splitView := container.NewHSplit(detailsContainer, searchContent)
+	splitView.SetOffset(0.20) // Adjust the split ratio
 
 	return container.NewTabItemWithIcon("Search", theme.SearchIcon(), splitView)
 }

@@ -6,12 +6,10 @@ import (
 	"AletheiaDesktop/src/util/database"
 	"fmt"
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"image/color"
 )
 
 func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container) *fyne.Container {
@@ -47,14 +45,10 @@ func CreateBookListContainer(book search.Book, DetailsContainer *fyne.Container)
 		downloadButton,
 		layout.NewSpacer(),
 	)
+	bookDetailsLabelContainer.Add(buttonContainer)
 
 	// add some boxing
-	border := canvas.NewRectangle(&color.NRGBA{R: 97, G: 97, B: 97, A: 50})
-	border.StrokeColor = color.NRGBA{R: 97, G: 97, B: 97, A: 50}
-	border.StrokeWidth = 2
-	border.CornerRadius = 10
-
-	bookDetailsLabelContainer.Add(buttonContainer)
+	border := components.CreateBorderBox()
 	borderedContainer := container.NewStack(border, bookDetailsLabelContainer)
 
 	return borderedContainer

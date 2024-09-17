@@ -1,0 +1,63 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  release:
+    types: [created]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Set up Docker
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        sudo usermod -aG docker $USER
+
+    - name: Install fyne-cross
+      run: go install github.com/fyne-io/fyne-cross@latest
+
+    - name: Build for Linux
+      run: fyne-cross linux --arch amd64
+
+    - name: Build for Windows
+      run: fyne-cross windows --arch amd64
+
+    - name: Archive Linux binary
+      run: tar -czvf linux-amd64-binary.tar.gz -C fyne-cross/bin/linux-amd64 .
+
+    - name: Archive Windows binary
+      run: zip -r windows-amd64-binary.zip fyne-cross/bin/windows-amd64/*
+
+    - name: Upload Release Assets
+      uses: actions/upload-release-asset@v1
+      if: github.event_name == 'release'
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./linux-amd64-binary.tar.gz
+        asset_name: linux-amd64-binary.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload Windows Release Assets
+      uses: actions/upload-release-asset@v1
+      if: github.event_name == 'release'
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./windows-amd64-binary.zip
+        asset_name: windows-amd64-binary.zip
+        asset_content_type: application/zip

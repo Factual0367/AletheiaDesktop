@@ -3,16 +3,13 @@ package views
 import (
 	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/search"
-	"AletheiaDesktop/src/util/cache"
 	"AletheiaDesktop/src/util/shared"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/onurhanak/libgenapi"
 	"log"
-	"path"
 	"strconv"
 )
 
@@ -21,7 +18,7 @@ var (
 	numberOfResults = 25
 )
 
-func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Container) *fyne.Container {
+func constructBookContainers(query *libgenapi.Query, appWindow fyne.Window) *fyne.Container {
 	bookGrid := container.NewVBox()
 
 	for _, book := range query.Results {
@@ -34,28 +31,11 @@ func constructBookContainers(query *libgenapi.Query, detailsContainer *fyne.Cont
 		convertedBook.ConstructFilename()
 		convertedBook.ConstructFilepath()
 		convertedBook.ConstructCoverPath()
-		bookItem := CreateBookListContainer(convertedBook, detailsContainer)
+		bookItem := CreateBookListContainer(convertedBook, appWindow)
 		bookGrid.Add(bookItem)
 	}
 
 	return bookGrid
-}
-
-func createDefaultDetailsView() *fyne.Container {
-	defaultBook := models.Book{
-		Book: libgenapi.Book{
-			ID:        "Default",
-			Title:     "Select a book to view details.",
-			CoverLink: "https://cdn.pixabay.com/photo/2013/07/13/13/34/book-161117_960_720.png",
-		},
-		Filename:   "",
-		Filepath:   "",
-		Downloaded: false,
-		CoverPath:  path.Join(cache.GetAletheiaCache(), "Default"),
-	}
-
-	defaultDetailsView := CreateBookDetailsView(defaultBook, true)
-	return container.NewVBox(defaultDetailsView)
 }
 
 func createSearchBar(onSearch func()) (*widget.Entry, *widget.Button, *widget.Select, *widget.Select) {
@@ -83,12 +63,12 @@ func createSearchBar(onSearch func()) (*widget.Entry, *widget.Button, *widget.Se
 func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select, numberOfResultsSelector *widget.Select) *fyne.Container {
 	topContent := container.NewGridWithColumns(2,
 		container.NewStack(searchInput),
-		container.NewHBox(searchButton, searchTypeWidget, numberOfResultsSelector, layout.NewSpacer()),
+		container.NewHBox(searchButton, searchTypeWidget, numberOfResultsSelector),
 	)
 	return topContent
 }
 
-func executeSearch(searchInput *widget.Entry, searchType string, resultsContainer, detailsContainer *fyne.Container) {
+func executeSearch(searchInput *widget.Entry, searchType string, resultsContainer *fyne.Container, appWindow fyne.Window) {
 	resultsContainer.Objects = nil // Clear previous results
 
 	go func() {
@@ -99,19 +79,18 @@ func executeSearch(searchInput *widget.Entry, searchType string, resultsContaine
 		}
 
 		if query != nil {
-			resultsContainer.Add(constructBookContainers(query, detailsContainer))
+			resultsContainer.Add(constructBookContainers(query, appWindow))
 			resultsContainer.Refresh()
 		}
 	}()
 }
 
-func CreateSearchView() *container.TabItem {
+func CreateSearchView(appWindow fyne.Window) *container.TabItem {
 	resultsContainer := container.NewVBox()
-	detailsContainer := createDefaultDetailsView()
 	var searchInput = widget.NewEntry()
 
 	searchInput, searchButton, searchTypeWidget, numberOfResultsSelector := createSearchBar(func() {
-		executeSearch(searchInput, searchType, resultsContainer, detailsContainer)
+		executeSearch(searchInput, searchType, resultsContainer, appWindow)
 	})
 
 	topContent := layoutTopContent(searchInput, searchButton, searchTypeWidget, numberOfResultsSelector)
@@ -121,8 +100,7 @@ func CreateSearchView() *container.TabItem {
 		container.NewVScroll(resultsContainer), // Results are scrollable
 	)
 
-	splitView := container.NewHSplit(detailsContainer, searchContent)
-	splitView.SetOffset(0.20) // Adjust the split ratio
+	searchContentView := container.NewVScroll(searchContent)
 
-	return container.NewTabItemWithIcon("Search", theme.SearchIcon(), splitView)
+	return container.NewTabItemWithIcon("Search", theme.SearchIcon(), searchContentView)
 }

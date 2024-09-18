@@ -16,13 +16,8 @@ import (
 )
 
 func CreateBookLibraryContainer(book models.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
-	bookDetailsString := fmt.Sprintf(
-		"Title: %s\nAuthor: %s\nFiletype: %s\nFilesize: %s\nLanguage: %s\nPages: %s\nPublisher: %s",
-		book.Title, book.Author, book.Extension, book.Size, book.Language, book.Pages, book.Publisher,
-	)
 
-	bookDetailsLabel := widget.NewLabelWithStyle(bookDetailsString, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
-	bookDetailsLabel.Wrapping = fyne.TextWrapWord
+	bookDetailsContainer := components.CreateBookDetails(book, true)
 
 	openButton := widget.NewButtonWithIcon("", theme.FileIcon(), func() {
 		go func() {
@@ -35,7 +30,7 @@ func CreateBookLibraryContainer(book models.Book, appWindow fyne.Window, tabs *c
 	})
 
 	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {
-		ShowConversionPopup(appWindow, book, tabs)
+		components.ShowConversionPopup(appWindow, book, tabs)
 	})
 
 	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
@@ -70,9 +65,9 @@ func CreateBookLibraryContainer(book models.Book, appWindow fyne.Window, tabs *c
 
 	border := components.CreateBorderBox()
 
-	bookCover := createBookDetailsTopView(book)
+	bookCover := components.CreateBookCover(book)
 
-	borderedContainer := container.NewStack(border, container.NewVBox(bookDetailsLabel, buttonContainer))
+	borderedContainer := container.NewStack(border, container.NewVBox(bookDetailsContainer, buttonContainer))
 	borderedContainerWithCover := container.NewHSplit(bookCover, borderedContainer)
 	borderedContainerWithCover.SetOffset(0.10)
 

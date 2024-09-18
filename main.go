@@ -29,7 +29,7 @@ func main() {
 
 	tabs := container.NewAppTabs()
 
-	searchView := views.CreateSearchView()
+	searchView := views.CreateSearchView(myWindow)
 	settingsView := views.CreateSettingsView()
 	libraryView := views.CreateLibraryView(myWindow, tabs)
 	bookmarksView := views.CreateBookmarksView(myWindow, tabs)

@@ -36,6 +36,7 @@ func createEmailContainer() *fyne.Container {
 	emailEntry.PlaceHolder = email.GetUserEmail()
 
 	passwordEntry := widget.NewPasswordEntry()
+	passwordEntry.PlaceHolder = "Your app password"
 
 	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {
 		emailSaved := email.SaveEmail(emailEntry.Text)

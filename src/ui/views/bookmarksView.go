@@ -66,6 +66,6 @@ func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 		updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, "", appWindow, tabs)
 	}
 
-	bookmarksViewLayout := container.NewBorder(container.NewWithoutLayout(filterInput), nil, nil, nil, bookmarksViewGridScrollable)
+	bookmarksViewLayout := container.NewBorder(container.NewMax(filterInput), nil, nil, nil, bookmarksViewGridScrollable)
 	return container.NewTabItemWithIcon("Bookmarks", theme.ContentAddIcon(), bookmarksViewLayout)
 }

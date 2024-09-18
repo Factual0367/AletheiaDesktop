@@ -12,7 +12,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func CreateBookListContainer(book models.Book, DetailsContainer *fyne.Container) *fyne.Container {
+func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"%s\n%s\nFiletype: %s\nFilesize: %s",
 		book.Title, book.Author, book.Extension, book.Size)
@@ -25,12 +25,13 @@ func CreateBookListContainer(book models.Book, DetailsContainer *fyne.Container)
 	downloadButton := components.CreateDownloadButton(book)
 
 	moreInformationButton := widget.NewButtonWithIcon("", theme.InfoIcon(), func() {
-		DetailsContainer.Objects = nil
+		// DetailsContainer.Objects = nil
 		// new content for the selected book
-		newDetailsView := CreateBookDetailsView(book, false)
-		DetailsContainer.Add(newDetailsView)
-
-		DetailsContainer.Refresh()
+		// newDetailsView := CreateBookDetailsView(book, false)
+		// DetailsContainer.Add(newDetailsView)
+		// DetailsContainer.Refresh()
+		bookDetailsPopup := components.BookDetailsPopup(appWindow, book)
+		bookDetailsPopup.Show()
 	})
 
 	var favoriteButton *widget.Button

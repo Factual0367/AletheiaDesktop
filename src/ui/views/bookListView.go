@@ -25,12 +25,7 @@ func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Cont
 	downloadButton := components.CreateDownloadButton(book)
 
 	moreInformationButton := widget.NewButtonWithIcon("", theme.InfoIcon(), func() {
-		// DetailsContainer.Objects = nil
-		// new content for the selected book
-		// newDetailsView := CreateBookDetailsView(book, false)
-		// DetailsContainer.Add(newDetailsView)
-		// DetailsContainer.Refresh()
-		bookDetailsPopup := components.BookDetailsPopup(appWindow, book)
+		bookDetailsPopup := BookDetailsPopup(appWindow, book)
 		bookDetailsPopup.Show()
 	})
 

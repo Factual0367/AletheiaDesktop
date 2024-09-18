@@ -1,7 +1,8 @@
-package components
+package views
 
 import (
 	"AletheiaDesktop/src/models"
+	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/conversion"
 	"AletheiaDesktop/src/util/shared"
 	"fyne.io/fyne/v2"
@@ -11,8 +12,8 @@ import (
 )
 
 func BookDetailsPopup(appWindow fyne.Window, book models.Book) *widget.PopUp {
-	bookCover := CreateBookCover(book)
-	bookDetails := CreateBookDetails(book, false)
+	bookCover := components.CreateBookCover(book)
+	bookDetails := components.CreateBookDetails(book, false)
 	var bookDetailsPopup *widget.PopUp
 
 	bookDetails.MinSize()
@@ -23,7 +24,7 @@ func BookDetailsPopup(appWindow fyne.Window, book models.Book) *widget.PopUp {
 			widget.NewButton("Close", func() {
 				bookDetailsPopup.Hide()
 			}),
-			CreateDownloadButton(book),
+			components.CreateDownloadButton(book),
 		),
 	)
 
@@ -48,7 +49,7 @@ func ConversionPopup(appWindow fyne.Window, book models.Book, tabs *container.Ap
 				modal.Hide()
 				if conversion.ConvertToFormat(targetFormat, book) {
 					shared.SendNotification("Success", "Your book is converted successfully.")
-					// views.RefreshLibraryTab(appWindow, tabs)
+					RefreshLibraryTab(appWindow, tabs)
 				} else {
 					shared.SendNotification("Error", "Cannot convert book. Did you select the right format?")
 				}

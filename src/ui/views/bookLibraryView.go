@@ -30,7 +30,7 @@ func CreateBookLibraryContainer(book models.Book, appWindow fyne.Window, tabs *c
 	})
 
 	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {
-		components.ShowConversionPopup(appWindow, book, tabs)
+		ShowConversionPopup(appWindow, book, tabs)
 	})
 
 	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {

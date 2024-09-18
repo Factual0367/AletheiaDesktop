@@ -9,7 +9,6 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/onurhanak/libgenapi"
-	"log"
 	"strconv"
 )
 
@@ -41,19 +40,16 @@ func constructBookContainers(query *libgenapi.Query, appWindow fyne.Window) *fyn
 func createSearchBar(onSearch func()) (*widget.Entry, *widget.Button, *widget.Select, *widget.Select) {
 	searchInput := widget.NewEntry()
 	searchInput.SetPlaceHolder("Enter search query")
-
 	searchButton := widget.NewButtonWithIcon("", theme.SearchIcon(), onSearch)
 	searchInput.OnSubmitted = func(text string) { onSearch() }
 
 	searchTypeWidget := widget.NewSelect([]string{"Default", "Author", "Title"}, func(value string) {
 		searchType = value
-		log.Println("Search type set to", value)
 	})
 	searchTypeWidget.PlaceHolder = "Default"
 
 	numberOfResultsSelector := widget.NewSelect([]string{"25", "50", "100"}, func(value string) {
 		numberOfResults, _ = strconv.Atoi(value)
-		log.Println("Number of results set to", value)
 	})
 	numberOfResultsSelector.PlaceHolder = "25"
 
@@ -61,7 +57,7 @@ func createSearchBar(onSearch func()) (*widget.Entry, *widget.Button, *widget.Se
 }
 
 func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, searchTypeWidget *widget.Select, numberOfResultsSelector *widget.Select) *fyne.Container {
-	topContent := container.NewGridWithColumns(2,
+	topContent := container.NewGridWithRows(1,
 		container.NewStack(searchInput),
 		container.NewHBox(searchButton, searchTypeWidget, numberOfResultsSelector),
 	)

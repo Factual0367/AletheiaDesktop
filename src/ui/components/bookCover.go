@@ -29,7 +29,6 @@ func CreateBookCover(book models.Book) *fyne.Container {
 		bookCover = canvas.NewImageFromFile(book.CoverPath)
 	} else {
 		bookCover = canvas.NewImageFromURI(uri)
-
 	}
 
 	bookCover.FillMode = canvas.ImageFillContain

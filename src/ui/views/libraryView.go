@@ -16,7 +16,10 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filt
 	grid.RemoveAll()
 	for _, book := range shared.FilterBooks(books, filter) {
 		if exists, err := shared.Exists(book.Filepath); exists && err == nil {
-			grid.Add(CreateBookLibraryContainer(*book, appWindow, tabs))
+			// to not block the ui if the list is large
+			go func() {
+				grid.Add(CreateBookLibraryContainer(*book, appWindow, tabs))
+			}()
 		} else {
 			log.Printf("Book does not exist, removing book from database: %s", book.Title)
 			database.UpdateDatabase(*book, false, "downloaded")

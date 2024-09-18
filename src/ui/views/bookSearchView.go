@@ -3,6 +3,7 @@ package views
 import (
 	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/ui/components"
+	"AletheiaDesktop/src/util/cache"
 	"AletheiaDesktop/src/util/database"
 	"fmt"
 	"fyne.io/fyne/v2"
@@ -25,13 +26,20 @@ func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Cont
 	downloadButton := components.CreateDownloadButton(book)
 
 	moreInformationButton := widget.NewButtonWithIcon("", theme.InfoIcon(), func() {
-		bookDetailsPopup := BookDetailsPopup(appWindow, book)
-		bookDetailsPopup.Show()
+		go func() {
+			bookDetailsPopup := BookDetailsPopup(appWindow, book)
+			bookDetailsPopup.Show()
+		}()
 	})
 
 	var favoriteButton *widget.Button
 	favoriteButton = widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
 		database.UpdateDatabase(book, true, "favorited")
+		// download covers before the user opens the
+		// bookmarks view to prevent lag
+		go func() {
+			cache.SaveCoverImage(book.CoverLink, book.CoverPath)
+		}()
 		favoriteButton.SetIcon(theme.ContentRemoveIcon())
 	})
 

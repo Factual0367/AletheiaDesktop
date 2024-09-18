@@ -17,7 +17,10 @@ func updateBookmarksGrid(grid *fyne.Container, books map[string]*models.Book, fi
 
 	filteredBooks := shared.FilterBooks(books, filter)
 	for _, book := range filteredBooks {
-		grid.Add(CreateBookBookmarksContainer(*book, appWindow, tabs))
+		// this is not block ui if the list of books is large
+		go func() {
+			grid.Add(CreateBookBookmarksContainer(*book, appWindow, tabs))
+		}()
 	}
 	grid.Refresh()
 }

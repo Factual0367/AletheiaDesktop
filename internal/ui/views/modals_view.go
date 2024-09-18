@@ -3,7 +3,7 @@ package views
 import (
 	"AletheiaDesktop/internal/models"
 	"AletheiaDesktop/internal/ui/components"
-	conversion2 "AletheiaDesktop/pkg/util/conversion"
+	"AletheiaDesktop/pkg/util/conversion"
 	"AletheiaDesktop/pkg/util/shared"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -47,7 +47,7 @@ func ConversionPopup(appWindow fyne.Window, book models.Book, tabs *container.Ap
 		widget.NewButtonWithIcon("Convert", theme.ContentRedoIcon(), func() {
 			go func() {
 				modal.Hide()
-				if conversion2.ConvertToFormat(targetFormat, book) {
+				if conversion.ConvertToFormat(targetFormat, book) {
 					shared.SendNotification("Success", "Your book is converted successfully.")
 					RefreshLibraryTab(appWindow, tabs)
 				} else {
@@ -79,7 +79,7 @@ func InstallCalibrePopup(appWindow fyne.Window) *widget.PopUp {
 }
 
 func ShowConversionPopup(appWindow fyne.Window, book models.Book, tabs *container.AppTabs) {
-	if conversion2.CheckCalibreInstalled() {
+	if conversion.CheckCalibreInstalled() {
 		ConversionPopup(appWindow, book, tabs).Show()
 	} else {
 		InstallCalibrePopup(appWindow).Show()

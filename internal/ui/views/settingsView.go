@@ -1,9 +1,9 @@
 package views
 
 import (
-	config2 "AletheiaDesktop/pkg/util/config"
-	email2 "AletheiaDesktop/pkg/util/email"
-	shared2 "AletheiaDesktop/pkg/util/shared"
+	"AletheiaDesktop/pkg/util/config"
+	"AletheiaDesktop/pkg/util/email"
+	"AletheiaDesktop/pkg/util/shared"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -13,15 +13,15 @@ import (
 
 func createDownloadLocationContainer() *fyne.Container {
 	currentLibraryLocationMsg := "Current Library Location: "
-	downloadDir := config2.GetCurrentDownloadFolder()
+	downloadDir := config.GetCurrentDownloadFolder()
 
 	currentDownloadDirLabel := widget.NewLabelWithStyle(currentLibraryLocationMsg, fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
 	downloadDirLabel := widget.NewLabel(downloadDir)
 
 	changeDownloadLocationButton := widget.NewButtonWithIcon("Change Library Location", theme.FolderIcon(), func() {
-		newDownloadDir := shared2.GetFolder()
+		newDownloadDir := shared.GetFolder()
 		if newDownloadDir != "" {
-			config2.UpdateDownloadPath(newDownloadDir)
+			config.UpdateDownloadPath(newDownloadDir)
 			downloadDirLabel.SetText(fmt.Sprintf("%s \n%s", currentLibraryLocationMsg, newDownloadDir))
 		}
 	})
@@ -33,18 +33,18 @@ func createEmailContainer() *fyne.Container {
 	emailLabel := widget.NewLabelWithStyle("Email", fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
 
 	emailEntry := widget.NewEntry()
-	emailEntry.PlaceHolder = email2.GetUserEmail()
+	emailEntry.PlaceHolder = email.GetUserEmail()
 
 	passwordEntry := widget.NewPasswordEntry()
 	passwordEntry.PlaceHolder = "Your app password"
 
 	saveEmailButton := widget.NewButtonWithIcon("Save", theme.DocumentSaveIcon(), func() {
-		emailSaved := email2.SaveEmail(emailEntry.Text)
-		passwordSaved := email2.SavePassword(passwordEntry.Text)
+		emailSaved := email.SaveEmail(emailEntry.Text)
+		passwordSaved := email.SavePassword(passwordEntry.Text)
 		if emailSaved && passwordSaved {
-			shared2.SendNotification("Success", "Your email and password have been saved.")
+			shared.SendNotification("Success", "Your email and password have been saved.")
 		} else {
-			shared2.SendNotification("Error", "Failed to save your email or password.")
+			shared.SendNotification("Error", "Failed to save your email or password.")
 		}
 	})
 

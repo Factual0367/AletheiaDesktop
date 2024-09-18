@@ -3,8 +3,8 @@ package views
 import (
 	"AletheiaDesktop/internal/models"
 	"AletheiaDesktop/internal/ui/components"
-	database2 "AletheiaDesktop/pkg/util/database"
-	shared2 "AletheiaDesktop/pkg/util/shared"
+	"AletheiaDesktop/pkg/util/database"
+	"AletheiaDesktop/pkg/util/shared"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -14,15 +14,15 @@ import (
 
 func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
-	for _, book := range shared2.FilterBooks(books, filter) {
-		if exists, err := shared2.Exists(book.Filepath); exists && err == nil {
+	for _, book := range shared.FilterBooks(books, filter) {
+		if exists, err := shared.Exists(book.Filepath); exists && err == nil {
 			// to not block the ui if the list is large
 			go func() {
 				grid.Add(CreateBookLibraryContainer(*book, appWindow, tabs))
 			}()
 		} else {
 			log.Printf("Book does not exist, removing book from database: %s", book.Title)
-			database2.UpdateDatabase(*book, false, "downloaded")
+			database.UpdateDatabase(*book, false, "downloaded")
 		}
 	}
 	grid.Refresh()
@@ -35,7 +35,7 @@ func RefreshLibraryTab(appWindow fyne.Window, tabs *container.AppTabs) {
 }
 
 func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
-	savedBooks, err := database2.LoadSavedBooks()
+	savedBooks, err := database.LoadSavedBooks()
 	if err != nil {
 		log.Printf("Could not read savedBooks: %s", err)
 		return nil

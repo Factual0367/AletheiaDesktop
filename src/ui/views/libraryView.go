@@ -9,36 +9,12 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"log"
-	"strings"
 	"time"
 )
 
-func loadSavedBooks() (map[string]*models.Book, error) {
-	userData, err := database.ReadDatabaseFile()
-	if err != nil {
-		return nil, err
-	}
-
-	if savedBooks, ok := userData["savedBooks"].(map[string]*models.Book); ok {
-		return savedBooks, nil
-	}
-	return nil, nil
-}
-
-func filterBooks(books map[string]*models.Book, filter string) []*models.Book {
-	filter = strings.ToLower(filter)
-	var filteredBooks []*models.Book
-	for _, book := range books {
-		if strings.Contains(strings.ToLower(book.Title), filter) {
-			filteredBooks = append(filteredBooks, book)
-		}
-	}
-	return filteredBooks
-}
-
 func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
-	for _, book := range filterBooks(books, filter) {
+	for _, book := range shared.FilterBooks(books, filter) {
 		if exists, err := shared.Exists(book.Filepath); exists && err == nil {
 			grid.Add(CreateBookLibraryContainer(*book, appWindow, tabs))
 		} else {
@@ -56,7 +32,7 @@ func RefreshLibraryTab(appWindow fyne.Window, tabs *container.AppTabs) {
 }
 
 func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
-	savedBooks, err := loadSavedBooks()
+	savedBooks, err := database.LoadSavedBooks()
 	if err != nil {
 		log.Printf("Could not read savedBooks: %s", err)
 		return nil

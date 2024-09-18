@@ -4,6 +4,7 @@ import (
 	"AletheiaDesktop/src/models"
 	"AletheiaDesktop/src/ui/components"
 	"AletheiaDesktop/src/util/database"
+	"AletheiaDesktop/src/util/shared"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -11,26 +12,13 @@ import (
 	"time"
 )
 
-func loadFavoriteBooks() (map[string]*models.Book, error) {
-	userData, err := database.ReadDatabaseFile()
-	if err != nil || len(userData) == 0 {
-		return nil, err
-	}
-
-	if favoriteBooks, ok := userData["favoriteBooks"].(map[string]*models.Book); ok {
-		return favoriteBooks, nil
-	}
-	return nil, nil
-}
-
 func updateBookmarksGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
 
-	filteredBooks := filterBooks(books, filter)
+	filteredBooks := shared.FilterBooks(books, filter)
 	for _, book := range filteredBooks {
 		grid.Add(CreateBookBookmarksContainer(*book, appWindow, tabs))
 	}
-
 	grid.Refresh()
 }
 
@@ -41,7 +29,7 @@ func refreshBookmarksTab(appWindow fyne.Window, tabs *container.AppTabs) {
 }
 
 func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
-	favoriteBooks, err := loadFavoriteBooks()
+	favoriteBooks, err := database.LoadFavoriteBooks()
 	if err != nil {
 		log.Printf("Could not read favoriteBooks: %s", err)
 	}

@@ -4,6 +4,7 @@ import (
 	"AletheiaDesktop/internal/models"
 	"AletheiaDesktop/internal/ui/components"
 	"AletheiaDesktop/pkg/util/database"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"

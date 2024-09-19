@@ -15,7 +15,7 @@ import (
 func CreateDownloadButton(book models.Book) *widget.Button {
 	var downloadButton *widget.Button
 
-	downloadButton = widget.NewButtonWithIcon("", theme.DownloadIcon(), func() {
+	downloadButton = widget.NewButtonWithIcon("Download", theme.DownloadIcon(), func() {
 		go func() {
 			if !downloads.AddInProgressDownloads(&book) {
 				shared.SendNotification(book.Title, "Downloading")

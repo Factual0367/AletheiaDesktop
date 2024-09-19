@@ -14,7 +14,7 @@ import (
 func CreateBookBookmarksContainer(book models.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
 	bookDetailsContainer := components.CreateBookDetails(book, true)
 
-	unfavoriteButton := widget.NewButtonWithIcon("", theme.ContentRemoveIcon(), func() {
+	unfavoriteButton := widget.NewButtonWithIcon("Unfavorite", theme.ContentRemoveIcon(), func() {
 		database.UpdateDatabase(book, false, "favorited")
 		refreshBookmarksTab(appWindow, tabs)
 	})

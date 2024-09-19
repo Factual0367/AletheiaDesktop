@@ -19,7 +19,7 @@ func CreateBookLibraryContainer(book models.Book, appWindow fyne.Window, tabs *c
 
 	bookDetailsContainer := components.CreateBookDetails(book, true)
 
-	openButton := widget.NewButtonWithIcon("", theme.FileIcon(), func() {
+	openButton := widget.NewButtonWithIcon("Open", theme.FileIcon(), func() {
 		go func() {
 			err := shared.OpenWithDefaultApp(book.Filepath)
 			if err != nil {
@@ -29,11 +29,11 @@ func CreateBookLibraryContainer(book models.Book, appWindow fyne.Window, tabs *c
 		}()
 	})
 
-	convertButton := widget.NewButtonWithIcon("", theme.ContentRedoIcon(), func() {
+	convertButton := widget.NewButtonWithIcon("Convert", theme.ContentRedoIcon(), func() {
 		ShowConversionPopup(appWindow, book, tabs)
 	})
 
-	deleteButton := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
+	deleteButton := widget.NewButtonWithIcon("Delete", theme.DeleteIcon(), func() {
 		confirmDialog := dialog.NewConfirm("Are you sure?", fmt.Sprintf("Do you want to delete %s?", book.Title), func(b bool) {
 			if b {
 				shared.DeleteBook(book)
@@ -43,12 +43,12 @@ func CreateBookLibraryContainer(book models.Book, appWindow fyne.Window, tabs *c
 		confirmDialog.Show()
 	})
 
-	openLibraryFolderButton := widget.NewButtonWithIcon("", theme.FolderOpenIcon(), func() {
+	openLibraryFolderButton := widget.NewButtonWithIcon("Open Location", theme.FolderOpenIcon(), func() {
 		shared.OpenLibraryFolder()
 	})
 
 	var emailBookButton *widget.Button
-	emailBookButton = widget.NewButtonWithIcon("", theme.MailSendIcon(), func() {
+	emailBookButton = widget.NewButtonWithIcon("Email", theme.MailSendIcon(), func() {
 		go func() {
 			emailSent := email.SendBookEmail(book)
 			if emailSent {

@@ -26,7 +26,7 @@ func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Cont
 
 	downloadButton := components.CreateDownloadButton(book)
 
-	moreInformationButton := widget.NewButtonWithIcon("", theme.InfoIcon(), func() {
+	moreInformationButton := widget.NewButtonWithIcon("More", theme.InfoIcon(), func() {
 		go func() {
 			bookDetailsPopup := BookDetailsPopup(appWindow, book)
 			bookDetailsPopup.Show()
@@ -34,7 +34,7 @@ func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Cont
 	})
 
 	var favoriteButton *widget.Button
-	favoriteButton = widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() {
+	favoriteButton = widget.NewButtonWithIcon("Favorite", theme.ContentAddIcon(), func() {
 		database.UpdateDatabase(book, true, "favorited")
 		// download covers before the user opens the
 		// bookmarks view to prevent lag

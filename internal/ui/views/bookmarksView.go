@@ -5,23 +5,33 @@ import (
 	"AletheiaDesktop/internal/ui/components"
 	"AletheiaDesktop/pkg/util/database"
 	"AletheiaDesktop/pkg/util/shared"
+	"log"
+	"sort"
+	"time"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
-	"log"
-	"time"
 )
 
 func updateBookmarksGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
 
 	filteredBooks := shared.FilterBooks(books, filter)
+
+	bookSlice := make(models.BookSlice, 0, len(filteredBooks))
 	for _, book := range filteredBooks {
-		// this is not block ui if the list of books is large
-		go func() {
-			grid.Add(CreateBookBookmarksContainer(*book, appWindow, tabs))
-		}()
+		bookSlice = append(bookSlice, book)
 	}
+	// sorting is necessasry here for the time being
+	// to keep order in the gui
+	sort.Sort(bookSlice)
+
+	for _, book := range bookSlice {
+		bookContainer := CreateBookBookmarksContainer(*book, appWindow, tabs)
+		grid.Add(bookContainer)
+	}
+
 	grid.Refresh()
 }
 
@@ -57,6 +67,6 @@ func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 		updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, "", appWindow, tabs)
 	}
 
-	bookmarksViewLayout := container.NewBorder(container.NewMax(filterInput), nil, nil, nil, bookmarksViewGridScrollable)
+	bookmarksViewLayout := container.NewBorder(container.NewStack(filterInput), nil, nil, nil, bookmarksViewGridScrollable)
 	return container.NewTabItemWithIcon("Bookmarks", theme.ContentAddIcon(), bookmarksViewLayout)
 }

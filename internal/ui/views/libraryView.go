@@ -5,26 +5,38 @@ import (
 	"AletheiaDesktop/internal/ui/components"
 	"AletheiaDesktop/pkg/util/database"
 	"AletheiaDesktop/pkg/util/shared"
+	"log"
+	"sort"
+	"time"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
-	"log"
-	"time"
 )
 
 func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
-	for _, book := range shared.FilterBooks(books, filter) {
+
+	filteredBooks := shared.FilterBooks(books, filter)
+
+	bookSlice := make(models.BookSlice, 0, len(filteredBooks))
+	for _, book := range filteredBooks {
+		bookSlice = append(bookSlice, book)
+	}
+
+	// sorting is necessasry here for the time being
+	// to keep order in the gui
+	sort.Sort(bookSlice)
+
+	for _, book := range bookSlice {
 		if exists, err := shared.Exists(book.Filepath); exists && err == nil {
-			// to not block the ui if the list is large
-			go func() {
-				grid.Add(CreateBookLibraryContainer(*book, appWindow, tabs))
-			}()
+			grid.Add(CreateBookLibraryContainer(*book, appWindow, tabs))
 		} else {
 			log.Printf("Book does not exist, removing book from database: %s", book.Title)
 			database.UpdateDatabase(*book, false, "downloaded")
 		}
 	}
+
 	grid.Refresh()
 }
 

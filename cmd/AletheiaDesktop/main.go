@@ -3,9 +3,10 @@ package main
 import (
 	"AletheiaDesktop/internal/ui/views"
 	"AletheiaDesktop/pkg/util/cache"
-	config2 "AletheiaDesktop/pkg/util/config"
+	"AletheiaDesktop/pkg/util/config"
 	"AletheiaDesktop/pkg/util/database"
 	"AletheiaDesktop/pkg/util/shared"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -13,10 +14,10 @@ import (
 )
 
 func checkFirstRun() {
-	defaultConfigPath, _ := config2.ConstructConfigLocation()
+	defaultConfigPath, _ := config.ConstructConfigLocation()
 	exists, err := shared.Exists(defaultConfigPath)
 	if !exists || err != nil {
-		config2.InitializeConfig()
+		config.InitializeConfig()
 		database.InitializeDatabase()
 	}
 }

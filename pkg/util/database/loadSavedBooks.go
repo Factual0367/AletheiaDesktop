@@ -1,6 +1,8 @@
 package database
 
-import "AletheiaDesktop/internal/models"
+import (
+	"AletheiaDesktop/internal/models"
+)
 
 func LoadSavedBooks() (map[string]*models.Book, error) {
 	userData, err := ReadDatabaseFile()

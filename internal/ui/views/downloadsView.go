@@ -3,6 +3,7 @@ package views
 import (
 	"AletheiaDesktop/internal/models"
 	"AletheiaDesktop/pkg/util/downloads"
+	"log"
 	"sort"
 	"time"
 
@@ -40,19 +41,31 @@ func StartDownloadsAutoRefresh(tabs *container.AppTabs) {
 	}()
 }
 
+var (
+	previousDownloadSize  int = 0
+	previousDownloadBooks models.BookSlice
+)
+
 func CreateDownloadsView() *container.TabItem {
 	downloadsViewContainer := container.NewVBox()
 	shouldStopRefreshing := true
 
-	bookSlice := make(models.BookSlice, 0, len(downloads.InProgressDownloads))
-	for _, book := range downloads.InProgressDownloads {
-		bookSlice = append(bookSlice, book)
-	}
-	// sorting is necessasry here for the time being
-	// to keep order in the gui
-	sort.Sort(bookSlice)
+	currentDownloadSize := len(downloads.InProgressDownloads)
 
-	for _, book := range bookSlice {
+	// rebuild and sort bookSlice if the number of in-progress downloads has changed
+	if currentDownloadSize != previousDownloadSize {
+		log.Println("Number of activa downloads changed, rebuilding book slice.")
+		previousDownloadSize = currentDownloadSize
+
+		previousDownloadBooks = make(models.BookSlice, 0, currentDownloadSize)
+		for _, book := range downloads.InProgressDownloads {
+			previousDownloadBooks = append(previousDownloadBooks, book)
+		}
+		// srting to maintain order in the GUI
+		sort.Sort(previousDownloadBooks)
+	}
+
+	for _, book := range previousDownloadBooks {
 		if book.DownloadProgress < 1 {
 			shouldStopRefreshing = false
 		}

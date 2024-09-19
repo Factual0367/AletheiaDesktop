@@ -14,21 +14,32 @@ import (
 	"fyne.io/fyne/v2/theme"
 )
 
+var (
+	previousLibrarySize             int = 0
+	previousFilteredDownloadedBooks models.BookSlice
+)
+
 func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
 
 	filteredBooks := shared.FilterBooks(books, filter)
+	currentLibrarySize := len(filteredBooks)
 
-	bookSlice := make(models.BookSlice, 0, len(filteredBooks))
-	for _, book := range filteredBooks {
-		bookSlice = append(bookSlice, book)
+	// recreate bookSlice if the size of filteredBooks has changed
+	if currentLibrarySize != previousLibrarySize {
+		log.Println("Library size has changed, recreating book slice.")
+		previousLibrarySize = currentLibrarySize
+
+		previousFilteredDownloadedBooks = make(models.BookSlice, 0, currentLibrarySize)
+		for _, book := range filteredBooks {
+			previousFilteredDownloadedBooks = append(previousFilteredDownloadedBooks, book)
+		}
+
+		// sorting is necessary here for the time being to keep order in the GUI
+		sort.Sort(previousFilteredDownloadedBooks)
 	}
 
-	// sorting is necessasry here for the time being
-	// to keep order in the gui
-	sort.Sort(bookSlice)
-
-	for _, book := range bookSlice {
+	for _, book := range previousFilteredDownloadedBooks {
 		if exists, err := shared.Exists(book.Filepath); exists && err == nil {
 			grid.Add(CreateBookLibraryContainer(*book, appWindow, tabs))
 		} else {
@@ -70,7 +81,7 @@ func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *containe
 		})
 	}
 
-	topWidgets := container.NewMax(filterInput)
+	topWidgets := container.NewStack(filterInput)
 	if savedBooks != nil {
 		updateLibraryGrid(libraryViewGrid, savedBooks, "", appWindow, tabs)
 	}

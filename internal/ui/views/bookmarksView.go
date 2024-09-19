@@ -14,20 +14,30 @@ import (
 	"fyne.io/fyne/v2/theme"
 )
 
+var (
+	previousBookmarksSize           int = 0
+	previousFilteredBookmarkedBooks models.BookSlice
+)
+
 func updateBookmarksGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
 
 	filteredBooks := shared.FilterBooks(books, filter)
+	currentBookmarksSize := len(filteredBooks)
 
-	bookSlice := make(models.BookSlice, 0, len(filteredBooks))
-	for _, book := range filteredBooks {
-		bookSlice = append(bookSlice, book)
+	if currentBookmarksSize != previousBookmarksSize {
+		log.Println("Bookmarks size changed, rebuilding book slice.")
+		previousBookmarksSize = currentBookmarksSize
+
+		previousFilteredBookmarkedBooks = make(models.BookSlice, 0, currentBookmarksSize)
+		for _, book := range filteredBooks {
+			previousFilteredBookmarkedBooks = append(previousFilteredBookmarkedBooks, book)
+		}
+
+		sort.Sort(previousFilteredBookmarkedBooks)
 	}
-	// sorting is necessasry here for the time being
-	// to keep order in the gui
-	sort.Sort(bookSlice)
 
-	for _, book := range bookSlice {
+	for _, book := range previousFilteredBookmarkedBooks {
 		bookContainer := CreateBookBookmarksContainer(*book, appWindow, tabs)
 		grid.Add(bookContainer)
 	}

@@ -6,9 +6,10 @@ import (
 	"AletheiaDesktop/pkg/util/downloads"
 	"AletheiaDesktop/pkg/util/shared"
 	"fmt"
+	"log"
+
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"log"
 )
 
 func CreateDownloadButton(book models.Book) *widget.Button {
@@ -26,7 +27,7 @@ func CreateDownloadButton(book models.Book) *widget.Button {
 					downloadButton.SetIcon(theme.ConfirmIcon())
 				} else {
 					shared.SendNotification(book.Title, "Download failed. Is Libgen down?")
-					log.Println(fmt.Sprintf("Download failed: %s"))
+					log.Println(fmt.Sprintf("Download failed for book %s", book.Title))
 					downloadButton.SetIcon(theme.ErrorIcon())
 				}
 			}

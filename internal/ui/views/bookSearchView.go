@@ -6,6 +6,7 @@ import (
 	"AletheiaDesktop/pkg/util/cache"
 	"AletheiaDesktop/pkg/util/database"
 	"fmt"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
@@ -39,8 +40,8 @@ func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Cont
 		// bookmarks view to prevent lag
 		go func() {
 			cache.SaveCoverImage(book.CoverLink, book.CoverPath)
+			favoriteButton.SetIcon(theme.ContentRemoveIcon())
 		}()
-		favoriteButton.SetIcon(theme.ContentRemoveIcon())
 	})
 
 	buttonContainer := container.NewHBox(

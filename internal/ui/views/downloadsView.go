@@ -29,6 +29,8 @@ func StopDownloadsAutoRefresh() {
 	}
 }
 
+// function to reset downloads view every 2 seconds
+// so we can show download progress
 func StartDownloadsAutoRefresh(tabs *container.AppTabs) {
 	if downloadRefreshTicker != nil {
 		downloadRefreshTicker.Stop()

@@ -35,12 +35,12 @@ func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Cont
 
 	var favoriteButton *widget.Button
 	favoriteButton = widget.NewButtonWithIcon("Favorite", theme.ContentAddIcon(), func() {
-		database.UpdateDatabase(book, true, "favorited")
 		// download covers before the user opens the
 		// bookmarks view to prevent lag
 		go func() {
+			database.UpdateDatabase(book, true, "favorited")
 			cache.SaveCoverImage(book.CoverLink, book.CoverPath)
-			favoriteButton.SetIcon(theme.ContentRemoveIcon())
+			favoriteButton.SetIcon(theme.ConfirmIcon())
 		}()
 	})
 

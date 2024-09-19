@@ -4,17 +4,31 @@ import (
 	"AletheiaDesktop/internal/models"
 	"AletheiaDesktop/pkg/util/cache"
 	"AletheiaDesktop/pkg/util/shared"
+	"log"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/storage"
 )
 
+var temporaryBookCache = make(map[string]*canvas.Image)
+
 func CreateBookCover(book models.Book) *fyne.Container {
 	coverImageSize := fyne.NewSize(120, 200)
 	var bookCover *canvas.Image
 
 	var uri fyne.URI
+
+	if bookCover, ok := temporaryBookCache[book.ID]; ok {
+		log.Println("Image exists in cache, returning it.")
+		bookCover = temporaryBookCache[book.ID]
+		bookCover.FillMode = canvas.ImageFillContain
+		bookCover.SetMinSize(coverImageSize)
+		bookCoverContainer := container.NewPadded(container.NewCenter(bookCover))
+		return bookCoverContainer
+	}
+
 	if book.CoverLink != "Unknown" {
 		uri, _ = storage.ParseURI(book.CoverLink)
 	} else {
@@ -31,6 +45,7 @@ func CreateBookCover(book models.Book) *fyne.Container {
 		bookCover = canvas.NewImageFromURI(uri)
 	}
 
+	temporaryBookCache[book.ID] = bookCover
 	bookCover.FillMode = canvas.ImageFillContain
 	bookCover.SetMinSize(coverImageSize)
 	bookCoverContainer := container.NewPadded(container.NewCenter(bookCover))

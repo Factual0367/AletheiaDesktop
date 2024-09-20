@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+// TODO
+// check for windows
+// if windows, suppress powershell
 func ConvertToFormat(targetFormat string, book models.Book) bool {
 	existingFilepath := book.Filepath
 	extension := path.Ext(existingFilepath)

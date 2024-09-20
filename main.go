@@ -30,10 +30,10 @@ func main() {
 
 	tabs := container.NewAppTabs()
 
-	searchView := views.CreateSearchView(myWindow)
-	settingsView := views.CreateSettingsView()
-	libraryView := views.CreateLibraryView(myWindow, tabs)
-	bookmarksView := views.CreateBookmarksView(myWindow, tabs)
+	searchView := views.CreateSearchView(myApp, myWindow)
+	settingsView := views.CreateSettingsView(myApp)
+	libraryView := views.CreateLibraryView(myApp, myWindow, tabs)
+	bookmarksView := views.CreateBookmarksView(myApp, myWindow, tabs)
 	downloadsView := views.CreateDownloadsView()
 
 	tabs = container.NewAppTabs(
@@ -48,11 +48,11 @@ func main() {
 	// when the user downloads a book
 	tabs.OnSelected = func(tab *container.TabItem) {
 		if tab.Icon == theme.StorageIcon() {
-			libraryView = views.CreateLibraryView(myWindow, tabs)
+			libraryView = views.CreateLibraryView(myApp, myWindow, tabs)
 			tabs.Items[1] = libraryView
 			tabs.Refresh()
 		} else if tab.Icon == theme.ContentAddIcon() {
-			bookmarksView = views.CreateBookmarksView(myWindow, tabs)
+			bookmarksView = views.CreateBookmarksView(myApp, myWindow, tabs)
 			tabs.Items[2] = bookmarksView
 			tabs.Refresh()
 		} else if tab.Icon == theme.DownloadIcon() {

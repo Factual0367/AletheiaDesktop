@@ -5,13 +5,14 @@ import (
 	"AletheiaDesktop/internal/ui/components"
 	"AletheiaDesktop/pkg/util/conversion"
 	"AletheiaDesktop/pkg/util/shared"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
-func BookDetailsPopup(appWindow fyne.Window, book models.Book) *widget.PopUp {
+func BookDetailsPopup(myApp fyne.App, appWindow fyne.Window, book models.Book) *widget.PopUp {
 	bookCover := components.CreateBookCover(book)
 	bookDetails := components.CreateBookDetails(book, false)
 	var bookDetailsPopup *widget.PopUp
@@ -24,7 +25,7 @@ func BookDetailsPopup(appWindow fyne.Window, book models.Book) *widget.PopUp {
 			widget.NewButton("Close", func() {
 				bookDetailsPopup.Hide()
 			}),
-			components.CreateDownloadButton(book),
+			components.CreateDownloadButton(myApp, book),
 		),
 	)
 
@@ -37,7 +38,7 @@ func BookDetailsPopup(appWindow fyne.Window, book models.Book) *widget.PopUp {
 	return bookDetailsPopup
 }
 
-func ConversionPopup(appWindow fyne.Window, book models.Book, tabs *container.AppTabs) *widget.PopUp {
+func ConversionPopup(myApp fyne.App, appWindow fyne.Window, book models.Book, tabs *container.AppTabs) *widget.PopUp {
 	var targetFormat string
 	var modal *widget.PopUp
 
@@ -48,10 +49,10 @@ func ConversionPopup(appWindow fyne.Window, book models.Book, tabs *container.Ap
 			go func() {
 				modal.Hide()
 				if conversion.ConvertToFormat(targetFormat, book) {
-					shared.SendNotification("Success", "Your book is converted successfully.")
-					RefreshLibraryTab(appWindow, tabs)
+					shared.SendNotification(myApp, "Success", "Your book is converted successfully.")
+					RefreshLibraryTab(myApp, appWindow, tabs)
 				} else {
-					shared.SendNotification("Error", "Cannot convert book. Did you select the right format?")
+					shared.SendNotification(myApp, "Error", "Cannot convert book. Did you select the right format?")
 				}
 			}()
 		}),
@@ -78,9 +79,9 @@ func InstallCalibrePopup(appWindow fyne.Window) *widget.PopUp {
 	return modal
 }
 
-func ShowConversionPopup(appWindow fyne.Window, book models.Book, tabs *container.AppTabs) {
+func ShowConversionPopup(myApp fyne.App, appWindow fyne.Window, book models.Book, tabs *container.AppTabs) {
 	if conversion.CheckCalibreInstalled() {
-		ConversionPopup(appWindow, book, tabs).Show()
+		ConversionPopup(myApp, appWindow, book, tabs).Show()
 	} else {
 		InstallCalibrePopup(appWindow).Show()
 	}

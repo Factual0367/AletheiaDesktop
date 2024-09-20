@@ -14,7 +14,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Container {
+func CreateBookListContainer(myApp fyne.App, book models.Book, appWindow fyne.Window) *fyne.Container {
 	bookDetailsString := fmt.Sprintf(
 		"%s\n%s\nFiletype: %s\nFilesize: %s",
 		book.Title, book.Author, book.Extension, book.Size)
@@ -24,11 +24,11 @@ func CreateBookListContainer(book models.Book, appWindow fyne.Window) *fyne.Cont
 	bookDetailsLabel.Wrapping = fyne.TextWrapWord
 	bookDetailsLabelContainer.Add(bookDetailsLabel)
 
-	downloadButton := components.CreateDownloadButton(book)
+	downloadButton := components.CreateDownloadButton(myApp, book)
 
 	moreInformationButton := widget.NewButtonWithIcon("More", theme.InfoIcon(), func() {
 		go func() {
-			bookDetailsPopup := BookDetailsPopup(appWindow, book)
+			bookDetailsPopup := BookDetailsPopup(myApp, appWindow, book)
 			bookDetailsPopup.Show()
 		}()
 	})

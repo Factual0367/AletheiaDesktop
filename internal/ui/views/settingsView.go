@@ -5,6 +5,7 @@ import (
 	"AletheiaDesktop/pkg/util/email"
 	"AletheiaDesktop/pkg/util/shared"
 	"fmt"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -29,7 +30,7 @@ func createDownloadLocationContainer() *fyne.Container {
 	return container.NewVBox(currentDownloadDirLabel, downloadDirLabel, changeDownloadLocationButton)
 }
 
-func createEmailContainer() *fyne.Container {
+func createEmailContainer(myApp fyne.App) *fyne.Container {
 	emailLabel := widget.NewLabelWithStyle("Email", fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
 
 	emailEntry := widget.NewEntry()
@@ -42,19 +43,18 @@ func createEmailContainer() *fyne.Container {
 		emailSaved := email.SaveEmail(emailEntry.Text)
 		passwordSaved := email.SavePassword(passwordEntry.Text)
 		if emailSaved && passwordSaved {
-			shared.SendNotification("Success", "Your email and password have been saved.")
+			shared.SendNotification(myApp, "Success", "Your email and password have been saved.")
 		} else {
-			shared.SendNotification("Error", "Failed to save your email or password.")
+			shared.SendNotification(myApp, "Error", "Failed to save your email or password.")
 		}
 	})
 
 	return container.NewVBox(emailLabel, emailEntry, passwordEntry, saveEmailButton)
 }
 
-func CreateSettingsView() *container.TabItem {
-
+func CreateSettingsView(myApp fyne.App) *container.TabItem {
 	downloadLocationContainer := createDownloadLocationContainer()
-	emailContainer := createEmailContainer()
+	emailContainer := createEmailContainer(myApp)
 
 	padding := widget.NewLabel("")
 

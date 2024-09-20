@@ -12,14 +12,14 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func CreateBookBookmarksContainer(book models.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
+func CreateBookBookmarksContainer(myApp fyne.App, book models.Book, appWindow fyne.Window, tabs *container.AppTabs) *fyne.Container {
 	bookDetailsContainer := components.CreateBookDetails(book, true)
 
 	unfavoriteButton := widget.NewButtonWithIcon("Unfavorite", theme.ContentRemoveIcon(), func() {
 		database.UpdateDatabase(book, false, "favorited")
-		refreshBookmarksTab(appWindow, tabs)
+		refreshBookmarksTab(myApp, appWindow, tabs)
 	})
-	downloadButton := components.CreateDownloadButton(book)
+	downloadButton := components.CreateDownloadButton(myApp, book)
 	buttonContainer := container.NewHBox(unfavoriteButton, downloadButton, layout.NewSpacer())
 
 	border := components.CreateBorderBox()

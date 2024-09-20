@@ -19,7 +19,7 @@ var (
 	previousFilteredDownloadedBooks models.BookSlice
 )
 
-func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
+func updateLibraryGrid(myApp fyne.App, grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
 
 	filteredBooks := shared.FilterBooks(books, filter)
@@ -41,7 +41,7 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filt
 
 	for _, book := range previousFilteredDownloadedBooks {
 		if exists, err := shared.Exists(book.Filepath); exists && err == nil {
-			grid.Add(CreateBookLibraryContainer(*book, appWindow, tabs))
+			grid.Add(CreateBookLibraryContainer(myApp, *book, appWindow, tabs))
 		} else {
 			log.Printf("Book does not exist, removing book from database: %s", book.Title)
 			database.UpdateDatabase(*book, false, "downloaded")
@@ -51,13 +51,13 @@ func updateLibraryGrid(grid *fyne.Container, books map[string]*models.Book, filt
 	grid.Refresh()
 }
 
-func RefreshLibraryTab(appWindow fyne.Window, tabs *container.AppTabs) {
-	tabs.Items[1] = CreateLibraryView(appWindow, tabs)
+func RefreshLibraryTab(myApp fyne.App, appWindow fyne.Window, tabs *container.AppTabs) {
+	tabs.Items[1] = CreateLibraryView(myApp, appWindow, tabs)
 	tabs.SelectIndex(1)
 	tabs.Refresh()
 }
 
-func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
+func CreateLibraryView(myApp fyne.App, appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
 	savedBooks, err := database.LoadSavedBooks()
 	if err != nil {
 		log.Printf("Could not read savedBooks: %s", err)
@@ -76,14 +76,14 @@ func CreateLibraryView(appWindow fyne.Window, tabs *container.AppTabs) *containe
 		}
 		typingTimer = time.AfterFunc(300*time.Millisecond, func() {
 			if savedBooks != nil {
-				updateLibraryGrid(libraryViewGrid, savedBooks, filter, appWindow, tabs)
+				updateLibraryGrid(myApp, libraryViewGrid, savedBooks, filter, appWindow, tabs)
 			}
 		})
 	}
 
 	topWidgets := container.NewStack(filterInput)
 	if savedBooks != nil {
-		updateLibraryGrid(libraryViewGrid, savedBooks, "", appWindow, tabs)
+		updateLibraryGrid(myApp, libraryViewGrid, savedBooks, "", appWindow, tabs)
 	}
 
 	libraryViewLayout := container.NewBorder(topWidgets, nil, nil, nil, libraryViewGridScrollable)

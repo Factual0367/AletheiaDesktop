@@ -19,7 +19,7 @@ var (
 	previousFilteredBookmarkedBooks models.BookSlice
 )
 
-func updateBookmarksGrid(grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
+func updateBookmarksGrid(myApp fyne.App, grid *fyne.Container, books map[string]*models.Book, filter string, appWindow fyne.Window, tabs *container.AppTabs) {
 	grid.RemoveAll()
 
 	filteredBooks := shared.FilterBooks(books, filter)
@@ -38,20 +38,20 @@ func updateBookmarksGrid(grid *fyne.Container, books map[string]*models.Book, fi
 	}
 
 	for _, book := range previousFilteredBookmarkedBooks {
-		bookContainer := CreateBookBookmarksContainer(*book, appWindow, tabs)
+		bookContainer := CreateBookBookmarksContainer(myApp, *book, appWindow, tabs)
 		grid.Add(bookContainer)
 	}
 
 	grid.Refresh()
 }
 
-func refreshBookmarksTab(appWindow fyne.Window, tabs *container.AppTabs) {
-	tabs.Items[2] = CreateBookmarksView(appWindow, tabs)
+func refreshBookmarksTab(myApp fyne.App, appWindow fyne.Window, tabs *container.AppTabs) {
+	tabs.Items[2] = CreateBookmarksView(myApp, appWindow, tabs)
 	tabs.SelectIndex(2)
 	tabs.Refresh()
 }
 
-func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
+func CreateBookmarksView(myApp fyne.App, appWindow fyne.Window, tabs *container.AppTabs) *container.TabItem {
 	favoriteBooks, err := database.LoadFavoriteBooks()
 	if err != nil {
 		log.Printf("Could not read favoriteBooks: %s", err)
@@ -68,13 +68,13 @@ func CreateBookmarksView(appWindow fyne.Window, tabs *container.AppTabs) *contai
 		}
 		typingTimer = time.AfterFunc(300*time.Millisecond, func() {
 			if favoriteBooks != nil {
-				updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, filter, appWindow, tabs)
+				updateBookmarksGrid(myApp, bookmarksViewGrid, favoriteBooks, filter, appWindow, tabs)
 			}
 		})
 	}
 
 	if favoriteBooks != nil {
-		updateBookmarksGrid(bookmarksViewGrid, favoriteBooks, "", appWindow, tabs)
+		updateBookmarksGrid(myApp, bookmarksViewGrid, favoriteBooks, "", appWindow, tabs)
 	}
 
 	bookmarksViewLayout := container.NewBorder(container.NewStack(filterInput), nil, nil, nil, bookmarksViewGridScrollable)

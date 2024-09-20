@@ -4,12 +4,13 @@ import (
 	"AletheiaDesktop/internal/models"
 	"AletheiaDesktop/internal/search"
 	"AletheiaDesktop/pkg/util/shared"
+	"strconv"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/onurhanak/libgenapi"
-	"strconv"
 )
 
 var (
@@ -17,7 +18,7 @@ var (
 	numberOfResults = 25
 )
 
-func constructBookContainers(query *libgenapi.Query, appWindow fyne.Window) *fyne.Container {
+func constructBookContainers(myApp fyne.App, query *libgenapi.Query, appWindow fyne.Window) *fyne.Container {
 	bookGrid := container.NewVBox()
 
 	for _, book := range query.Results {
@@ -30,7 +31,7 @@ func constructBookContainers(query *libgenapi.Query, appWindow fyne.Window) *fyn
 		convertedBook.ConstructFilename()
 		convertedBook.ConstructFilepath()
 		convertedBook.ConstructCoverPath()
-		bookItem := CreateBookListContainer(convertedBook, appWindow)
+		bookItem := CreateBookListContainer(myApp, convertedBook, appWindow)
 		bookGrid.Add(bookItem)
 	}
 
@@ -64,29 +65,29 @@ func layoutTopContent(searchInput *widget.Entry, searchButton *widget.Button, se
 	return topContent
 }
 
-func executeSearch(searchInput *widget.Entry, searchType string, resultsContainer *fyne.Container, appWindow fyne.Window) {
+func executeSearch(myApp fyne.App, searchInput *widget.Entry, searchType string, resultsContainer *fyne.Container, appWindow fyne.Window) {
 	resultsContainer.Objects = nil // Clear previous results
 
 	go func() {
 		query, err := search.SearchLibgen(searchInput.Text, searchType, numberOfResults)
 		if err != nil {
-			shared.SendNotification("Failed", "Library Genesis is not responding.")
+			shared.SendNotification(myApp, "Failed", "Library Genesis is not responding.")
 			return
 		}
 
 		if query != nil {
-			resultsContainer.Add(constructBookContainers(query, appWindow))
+			resultsContainer.Add(constructBookContainers(myApp, query, appWindow))
 			resultsContainer.Refresh()
 		}
 	}()
 }
 
-func CreateSearchView(appWindow fyne.Window) *container.TabItem {
+func CreateSearchView(myApp fyne.App, appWindow fyne.Window) *container.TabItem {
 	resultsContainer := container.NewVBox()
-	var searchInput = widget.NewEntry()
+	searchInput := widget.NewEntry()
 
 	searchInput, searchButton, searchTypeWidget, numberOfResultsSelector := createSearchBar(func() {
-		executeSearch(searchInput, searchType, resultsContainer, appWindow)
+		executeSearch(myApp, searchInput, searchType, resultsContainer, appWindow)
 	})
 
 	topContent := layoutTopContent(searchInput, searchButton, searchTypeWidget, numberOfResultsSelector)

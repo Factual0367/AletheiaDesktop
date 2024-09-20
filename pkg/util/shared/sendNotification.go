@@ -1,13 +1,10 @@
 package shared
 
 import (
-	"github.com/gen2brain/beeep"
-	"log"
+	"fyne.io/fyne/v2"
 )
 
-func SendNotification(notificationHeader, notificationContent string) {
-	ok := beeep.Notify(notificationHeader, notificationContent, "")
-	if ok != nil {
-		log.Println("Could not send notification.")
-	}
+func SendNotification(myApp fyne.App, notificationHeader, notificationContent string) {
+	notification := fyne.NewNotification(notificationHeader, notificationContent)
+	myApp.SendNotification(notification)
 }

@@ -4,6 +4,7 @@
 <p align='center'><img  src="Icon.png" height="200" width="auto"></p>
 </sub>
 <h1 align="center">Aletheia Desktop</h1>
+<h3 align="center">Aletheia is under heavy development!</h1>
 
 <p align='center'><img  src="assets/screenshot.png" height="400" width="auto" /></p>
 

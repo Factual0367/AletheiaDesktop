@@ -35,7 +35,12 @@ Download the latest binary package from [releases](https://github.com/onurhanak/
     go mod download
     ```
 
-3. Build the application:
+3. Install fyne-cross:
+    ```sh
+    go install github.com/fyne-io/fyne-cross@latest
+    ```
+    
+5. Build the application:
     ```sh
     make linux
     ```

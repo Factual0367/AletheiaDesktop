@@ -73,6 +73,9 @@ func executeSearch(myApp fyne.App, searchInput *widget.Entry, searchType string,
 		if err != nil {
 			shared.SendNotification(myApp, "Failed", "Library Genesis is not responding.")
 			return
+		} else if len(query.Results) == 0 {
+			shared.SendNotification(myApp, "No results", "Library Genesis returned 0 results for your query.")
+			return
 		}
 
 		if query != nil {

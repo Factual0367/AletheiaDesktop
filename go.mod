@@ -5,7 +5,7 @@ go 1.23.1
 require (
 	fyne.io/fyne/v2 v2.5.1
 	github.com/gen2brain/beeep v0.0.0-20240516210008-9c006672e7f4
-	github.com/onurhanak/libgenapi v0.0.0-20240916110337-97fc14f5cc81
+	github.com/onurhanak/libgenapi v0.0.0-20241003142951-1040bd4bb176
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/sqweek/dialog v0.0.0-20240226140203-065105509627
 	github.com/wneessen/go-mail v0.4.4
